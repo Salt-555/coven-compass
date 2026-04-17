@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coven Compass — Every Correspondence, One Place</title>
+  <meta name="description" content="Herbs, crystals, candles, days, moon phases, and more — lookup every spell correspondence for any intention instantly.">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap');
+    :root{--cream:#FAF7F2;--cream-dark:#F0EBE3;--gold:#C5A55A;--gold-light:#D4BA7A;--gold-dark:#A8893E;--black:#0A0A0A;--black-soft:#1A1A1A;--charcoal:#2D2D2D;--stone:#6B6560;--stone-light:#9B9590}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',-apple-system,sans-serif;font-weight:300;line-height:1.7;color:var(--black-soft);background:var(--cream);-webkit-font-smoothing:antialiased}
+    .container{max-width:720px;margin:0 auto;padding:0 24px}
+    .divider{width:48px;height:1px;background:var(--gold);margin:0 auto}
+    .hero{padding:120px 0 80px;text-align:center}
+    .hero-label{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:32px}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,64px);font-weight:600;line-height:1.1;color:var(--black);letter-spacing:-.02em;margin-bottom:24px}
+    .hero .subhead{font-size:17px;color:var(--stone);max-width:520px;margin:0 auto 48px;font-weight:300}
+    .purchase-btn{display:inline-block;padding:16px 32px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;background:var(--black);color:var(--cream);border:none;cursor:pointer;border-radius:2px;text-decoration:none;transition:background .3s}
+    .purchase-btn:hover{background:var(--charcoal)}
+    .form-note{font-size:12px;color:var(--stone-light);margin-top:16px;text-align:center;letter-spacing:.02em}
+    .section-label{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:40px}
+    .problem{padding:80px 0}
+    .pain-cards{display:grid;gap:1px;background:var(--cream-dark)}
+    .pain-card{padding:32px;background:var(--cream)}
+    .pain-card p{color:var(--charcoal);font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.6}
+    .solution{padding:80px 0;border-top:1px solid var(--cream-dark)}
+    .solution .intro{text-align:center;color:var(--stone);margin-bottom:56px;font-size:15px;max-width:520px;margin-left:auto;margin-right:auto}
+    .benefits{display:grid;gap:48px}
+    .benefit{display:grid;grid-template-columns:48px 1fr;gap:24px;align-items:start}
+    .benefit-marker{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);line-height:1;padding-top:2px}
+    .benefit h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--black);margin-bottom:8px}
+    .benefit p{font-size:14px;color:var(--stone)}
+    .proof{padding:64px 0;border-top:1px solid var(--cream-dark);border-bottom:1px solid var(--cream-dark)}
+    .stats{display:flex;justify-content:center;gap:64px;flex-wrap:wrap}
+    .stat{text-align:center}
+    .stat-number{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--black);line-height:1;margin-bottom:8px}
+    .stat-label{font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--stone-light)}
+    .faq{padding:80px 0}
+    .faq-list{max-width:560px;margin:0 auto}
+    .faq-item{padding:24px 0;border-bottom:1px solid var(--cream-dark)}
+    .faq-item:first-child{border-top:1px solid var(--cream-dark)}
+    .faq-item h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--black);margin-bottom:8px}
+    .faq-item p{font-size:14px;color:var(--stone)}
+    .cta{padding:100px 0;text-align:center}
+    .cta h2{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,40px);font-weight:600;color:var(--black);margin-bottom:16px}
+    .cta p{color:var(--stone);font-size:15px;margin-bottom:40px}
+    footer{padding:40px 0;text-align:center;border-top:1px solid var(--cream-dark)}
+    footer p{font-size:12px;color:var(--stone-light);letter-spacing:.04em}
+    footer a{color:var(--stone-light);text-decoration:none;transition:color .2s}
+    footer a:hover{color:var(--gold)}
+    footer .legal{margin-top:8px}
+    @media(max-width:600px){.hero{padding:80px 0 60px}.purchase-btn{padding:14px 28px;width:100%}.stats{gap:40px}.benefit{grid-template-columns:1fr;gap:8px}.benefit-marker{display:none}}
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="container">
+      <p class="hero-label">Coven Compass</p>
+      <h1>Every correspondence for your intention, in one place.</h1>
+      <p class="subhead">Type your intention. Get every herb, crystal, candle, day, moon phase, and incense you need. Instantly.</p>
+      <div class="divider" style="margin-bottom:48px"></div>
+      <a href="{{PAYMENT_LINK_URL}}" class="purchase-btn">Get Access &mdash; $7</a>
+      <p class="form-note">One-time purchase. No subscription.</p>
+    </div>
+  </section>
+
+  <section class="problem">
+    <div class="container">
+      <p class="section-label">The Problem</p>
+      <div class="pain-cards">
+        <div class="pain-card"><p>You spend 30 minutes hunting through blogs, PDFs, and Pinterest boards just to find which herb goes with protection spells.</p></div>
+        <div class="pain-card"><p>Subscription apps charge you monthly for reference data that hasn't changed in centuries. Moonly wants $30. Spells8 wants $29/mo. For correspondences.</p></div>
+        <div class="pain-card"><p>You have five browser tabs open cross-referencing herbs, crystals, candle colors, days of the week, and moon phases &mdash; and you're still not sure you got it right.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="solution">
+    <div class="container">
+      <p class="section-label">The Solution</p>
+      <p class="intro">Type your intention. Get every correspondence you need. Herbs, crystals, candles, days, moon phases, elements, incense &mdash; all in one place, instantly.</p>
+      <div class="benefits">
+        <div class="benefit">
+          <div class="benefit-marker">I</div>
+          <div><h3>Instant Lookup</h3><p>Type an intention and get rosemary, black tourmaline, white candles, Saturday, waning moon, and dragon's blood incense in under two seconds. No tabs. No PDFs.</p></div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-marker">II</div>
+          <div><h3>Complete Results</h3><p>Seven categories per intention. Herbs, crystals, candle colors, days, moon phases, elements, and incense. Everything for a full ritual, not just one piece.</p></div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-marker">III</div>
+          <div><h3>Own It Forever</h3><p>One download. Works offline in any browser. No subscription, no account, no app store. Open it on your laptop, tablet, or phone whenever you need it.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof">
+    <div class="container">
+      <div class="stats">
+        <div class="stat"><div class="stat-number">200+</div><div class="stat-label">Herbs and Crystals</div></div>
+        <div class="stat"><div class="stat-number">7</div><div class="stat-label">Categories Each</div></div>
+        <div class="stat"><div class="stat-number">$0</div><div class="stat-label">Monthly Cost</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <div class="container">
+      <p class="section-label">Questions</p>
+      <div class="faq-list">
+        <div class="faq-item"><h3>Does it work offline?</h3><p>Yes. It is a single HTML file with all the data embedded. Once downloaded, it works without internet on any device with a browser.</p></div>
+        <div class="faq-item"><h3>Is this for beginners or experienced practitioners?</h3><p>Both. Beginners use it to learn correspondences. Experienced witches use it to save time planning rituals.</p></div>
+        <div class="faq-item"><h3>How is this different from free websites?</h3><p>Free sites give you one category at a time across dozens of pages. Coven Compass gives you everything for your intention in one view.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <div class="divider" style="margin-bottom:48px"></div>
+      <h2>Your next ritual, fully planned in seconds.</h2>
+      <p>No subscription. No account. Just the answers you need, forever.</p>
+      <a href="{{PAYMENT_LINK_URL}}" class="purchase-btn">Get Access &mdash; $7</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <img src="/static/logo.png" alt="ALLMIND" style="height:40px;width:auto;margin-bottom:20px;opacity:.7">
+      <p>&copy; 2026 Coven Compass. An <a href="https://allmind.ai">ALLMIND</a> venture.</p>
+      <p class="legal"><a href="/privacy">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms">Terms</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
