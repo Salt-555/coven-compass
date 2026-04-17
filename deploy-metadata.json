@@ -1,13 +1,13 @@
 {
   "script_name": "coven-compass",
-  "deploy_mode": "market-testing",
-  "worker_url": "https://coven-compass.seanalt555.workers.dev",
-  "signups_kv_id": "719553a81859450596759c37f5727a7c",
-  "kv_customers_id": "",
-  "kv_sales_id": "",
-  "stripe_product_id": "",
-  "stripe_price_id": "",
-  "stripe_webhook_id": "",
-  "deployed_at": "2026-04-16",
-  "last_deploy_source_hash": "da4bff9173f059d1aadea86681095a43534ca980232d9aa6c91a402a974d1d5b"
+  "deploy_mode": "full",
+  "worker_url": "https://coven-compass.allmind.biz",
+  "signups_kv_id": "",
+  "kv_customers_id": "8635044516fa443c9dd502e56d7d9a22",
+  "kv_sales_id": "3756a16f13a54999a2d5d7e55981b6af",
+  "stripe_product_id": "prod_ULyv51tzBVCCp9",
+  "stripe_price_id": "price_1TNGxJIqUlirfBrCoyJLXWpt",
+  "stripe_webhook_id": "we_1TNGvmIqUlirfBrCqVbaIKXy",
+  "deployed_at": "2026-04-17",
+  "last_deploy_source_hash": "fe558db1d989c1535552660708b1c0edb4aa1c566da2492c60113eb7b36b44f1"
 }

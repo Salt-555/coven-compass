@@ -231,7 +231,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <h1>Every correspondence for your intention, in one place.</h1>
       <p class="subhead">Type your intention. Get every herb, crystal, candle, day, moon phase, and incense you need. Instantly.</p>
       <div class="divider" style="margin-bottom:48px"></div>
-      <a href="{{PAYMENT_LINK_URL}}" class="purchase-btn">Get Access &mdash; $7</a>
+      <a href="https://buy.stripe.com/00wdR98wc0o25nN8c58g002" class="purchase-btn">Get Access &mdash; $7</a>
       <p class="form-note">One-time purchase. No subscription.</p>
     </div>
   </section>
@@ -294,7 +294,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <div class="divider" style="margin-bottom:48px"></div>
       <h2>Your next ritual, fully planned in seconds.</h2>
       <p>No subscription. No account. Just the answers you need, forever.</p>
-      <a href="{{PAYMENT_LINK_URL}}" class="purchase-btn">Get Access &mdash; $7</a>
+      <a href="https://buy.stripe.com/00wdR98wc0o25nN8c58g002" class="purchase-btn">Get Access &mdash; $7</a>
     </div>
   </section>
 
