@@ -1375,19 +1375,19 @@ Object.entries(DB).forEach(([intention, data]) => {
 });
 
 // ─── ALL ITEMS (for supplies mode) ───
-const allItems = [...new Set(Object.values(reverseIndex).map((v,k) => k))].sort();
+const allItems = Object.keys(reverseIndex).sort();
 
 const categories = [
-  { key: 'herbs', label: 'Herbs', icon: '&#x1F33F;' },
-  { key: 'crystals', label: 'Crystals', icon: '&#x1F48E;' },
-  { key: 'candle_color', label: 'Candle Color', icon: '&#x1F56F;' },
-  { key: 'day', label: 'Best Day', icon: '&#x1F319;' },
-  { key: 'moon_phase', label: 'Moon Phase', icon: '&#x1F311;' },
-  { key: 'element', label: 'Element', icon: '&#x1F525;' },
-  { key: 'incense', label: 'Incense', icon: '&#x1F9ED;' },
-  { key: 'deities', label: 'Deities', icon: '&#x2B50;' },
-  { key: 'tarot', label: 'Tarot Card', icon: '&#x1F0CF;' },
-  { key: 'oil', label: 'Anointing Oil', icon: '&#x1F4A7;' }
+  { key: 'herbs', label: 'Herbs', icon: '\u{1F33F}' },
+  { key: 'crystals', label: 'Crystals', icon: '\u{1F48E}' },
+  { key: 'candle_color', label: 'Candle Color', icon: '\u{1F56F}' },
+  { key: 'day', label: 'Best Day', icon: '\u{1F319}' },
+  { key: 'moon_phase', label: 'Moon Phase', icon: '\u{1F311}' },
+  { key: 'element', label: 'Element', icon: '\u{1F525}' },
+  { key: 'incense', label: 'Incense', icon: '\u{1F9ED}' },
+  { key: 'deities', label: 'Deities', icon: '\u{2B50}' },
+  { key: 'tarot', label: 'Tarot Card', icon: '\u{1F0CF}' },
+  { key: 'oil', label: 'Anointing Oil', icon: '\u{1F4A7}' }
 ];
 
 // ─── TAB SWITCHING ───
@@ -1550,14 +1550,22 @@ function printSpellSheet(intention) {
 }
 
 // ─── INIT ───
-renderIntentionGrid();
-renderSupplyList();
+try {
+  renderIntentionGrid();
+  renderSupplyList();
+} catch(e) {
+  console.error('Init error:', e);
+  document.querySelector('.container').innerHTML = '<p style="color:red;padding:20px">Error: ' + e.message + '</p>';
+}
 document.getElementById('intentionSearch').addEventListener('input', e => {
-  renderIntentionGrid(e.target.value);
-  document.getElementById('correspondenceSheet').classList.add('hidden');
+  try {
+    renderIntentionGrid(e.target.value);
+    document.getElementById('correspondenceSheet').classList.add('hidden');
+  } catch(err) { console.error('Search error:', err); }
 });
 document.getElementById('reverseSearch').addEventListener('input', e => {
-  renderReverseLookup(e.target.value);
+  try { renderReverseLookup(e.target.value); }
+  catch(err) { console.error('Reverse error:', err); }
 });
 </script>
 
