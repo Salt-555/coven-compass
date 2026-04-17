@@ -32,6 +32,7 @@ def build():
     landing = js_string_literal(read('landing.html'))
     privacy = js_string_literal(read('privacy.html'))
     terms = js_string_literal(read('terms.html'))
+    app_html = js_string_literal(read('../assets/product.html'))
 
     # 3. Read the stripe-worker template
     with open(TEMPLATE, 'r') as f:
@@ -52,6 +53,8 @@ const PRIVACY_HTML = `{privacy}`;
 
 const TERMS_HTML = `{terms}`;
 
+const APP_HTML = `{app_html}`;
+
 '''
 
     # 5. Assemble final worker
@@ -61,6 +64,18 @@ const TERMS_HTML = `{terms}`;
     out_path = os.path.join(SRC, 'worker.js')
     with open(out_path, 'w') as f:
         f.write(worker)
+
+    # 7. Inject /app route (product-specific, not in shared template)
+    with open(out_path, 'r') as f:
+        final = f.read()
+    # Add route before the 404 fallback
+    app_route = "      else if (path === '/app') response = htmlResponse(APP_HTML);\n"
+    final = final.replace(
+        "      else response = jsonResponse({ error: 'Not found' }, 404);",
+        app_route + "      else response = jsonResponse({ error: 'Not found' }, 404);"
+    )
+    with open(out_path, 'w') as f:
+        f.write(final)
 
     size = len(worker)
     print(f"Wrote {out_path} ({size} bytes)")

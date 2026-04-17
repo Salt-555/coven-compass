@@ -71,7 +71,6 @@ details[open]>.supply-toggle{border-bottom:none;border-radius:2px 2px 0 0}
 @media print{.no-print{display:none!important}body{background:white}.print-area{display:block!important}}
 @media(max-width:600px){.cat-grid{grid-template-columns:1fr}}
 </style>
-<script src="correspondences.js"></script>
 </head>
 <body>
 
@@ -113,7 +112,7 @@ details[open]>.supply-toggle{border-bottom:none;border-radius:2px 2px 0 0}
 </div>
 
 <script>
-Object.keys(DB).forEach(function(int) {
+var DB = {"protection": {"herbs": ["rosemary", "sage", "bay leaf", "basil", "black pepper", "thyme", "juniper", "rue", "vervet (blue vervain)", "angelica"], "crystals": ["black tourmaline", "obsidian", "hematite", "smoky quartz", "jet", "black onyx"], "candle_color": "Black or White", "day": "Saturday", "moon_phase": "Waning", "element": "Earth", "incense": ["dragon's blood", "frankincense", "copal", "sandalwood"], "deities": ["Hecate", "Artemis", "Ares", "Mars"], "tarot": "The Tower", "direction": "North", "oil": "Protection blend (frankincense + myrrh)"}}
   var d = DB[int];
   Object.keys(d).forEach(function(cat) {
     var val = d[cat];
