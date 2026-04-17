@@ -17,11 +17,15 @@ def js_string_literal(s):
     return s.replace('\\', '\\\\').replace('`', '\\`').replace('${', '\\${')
 
 def build():
-    # 1. Create zip from product.html
-    product_path = os.path.join(SRC, '..', 'assets', 'product.html')
+    # 1. Create zip from the entire assets directory, inside a product-named folder
+    assets_dir = os.path.join(SRC, '..', 'assets')
+    product_folder = 'coven-compass'
     zip_buf = __import__('io').BytesIO()
     with zipfile.ZipFile(zip_buf, 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(product_path, 'coven-compass.html')
+        for fname in os.listdir(assets_dir):
+            fpath = os.path.join(assets_dir, fname)
+            if os.path.isfile(fpath) and not fname.startswith('.'):
+                zf.write(fpath, os.path.join(product_folder, fname))
     zip_b64 = base64.b64encode(zip_buf.getvalue()).decode()
 
     # 2. Read HTML files
