@@ -1,0 +1,13 @@
+{
+  "script_name": "coven-compass",
+  "deploy_mode": "market-testing",
+  "worker_url": "https://coven-compass.seanalt555.workers.dev",
+  "signups_kv_id": "719553a81859450596759c37f5727a7c",
+  "kv_customers_id": "",
+  "kv_sales_id": "",
+  "stripe_product_id": "",
+  "stripe_price_id": "",
+  "stripe_webhook_id": "",
+  "deployed_at": "2026-04-16",
+  "last_deploy_source_hash": "da4bff9173f059d1aadea86681095a43534ca980232d9aa6c91a402a974d1d5b"
+}
