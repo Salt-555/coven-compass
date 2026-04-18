@@ -149,7 +149,7 @@ async function sendDownloadEmail(env, email) {
     body: JSON.stringify({
       from: '{{PRODUCT_NAME}} <noreply@allmind.biz>',
       to: [email],
-      subject: 'Your download is ready',
+      subject: 'Coven Compass Access',
       html: `<div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;padding:40px 24px">
         <h1 style="font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:16px">You're in.</h1>
         <p style="color:#6B6560;font-size:15px;line-height:1.7;margin-bottom:24px">Thanks for your purchase. Your download is ready.</p>
