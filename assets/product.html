@@ -70,6 +70,39 @@ details[open]>.supply-toggle{border-bottom:none;border-radius:2px 2px 0 0}
 
 @media print{.no-print{display:none!important}body{background:white}.print-area{display:block!important}}
 @media(max-width:600px){.cat-grid{grid-template-columns:1fr}}
+
+.sp-label{display:block;font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+textarea{width:100%;padding:14px 20px;font-family:'Inter',sans-serif;font-size:14px;font-weight:300;border:1px solid var(--cream-dark);background:white;color:var(--charcoal);border-radius:2px;outline:none;resize:vertical}
+textarea:focus{border-color:var(--gold)}
+input[type="date"]{width:100%;padding:14px 20px;font-family:'Inter',sans-serif;font-size:14px;font-weight:300;border:1px solid var(--cream-dark);background:white;color:var(--charcoal);border-radius:2px;outline:none}
+input[type="date"]:focus{border-color:var(--gold)}
+.badge{display:inline-block;padding:2px 10px;font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;border-radius:2px}
+.badge-success{background:#E8F5E9;color:#2E7D32}
+.badge-partial{background:#FFF8E1;color:#F57F17}
+.badge-fail{background:#FFEBEE;color:#C62828}
+.badge-pending{background:var(--cream-dark);color:var(--stone)}
+.spell-sub-tab{font-size:10px;padding:8px 16px;background:var(--cream-dark);color:var(--stone)}
+.spell-sub-tab.active{background:var(--black);color:var(--cream)}
+.spell-panel{display:none}.spell-panel.active{display:block}
+.spell-ingred-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;max-height:180px;overflow-y:auto;padding:8px 0}
+.spell-outcome-group{display:flex;gap:16px;flex-wrap:wrap}
+.spell-outcome-opt{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px}
+.spell-outcome-opt input{accent-color:var(--gold)}
+.spell-entry{padding:16px;background:white;border:1px solid var(--cream-dark);margin-bottom:8px}
+.spell-entry-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.spell-entry-meta{font-size:12px;color:var(--stone);margin-top:2px}
+.spell-entry-details{display:none;padding-top:16px;margin-top:12px;border-top:1px solid var(--cream-dark)}
+.spell-entry-details.open{display:block}
+.spell-entry-notes{font-size:14px;color:var(--charcoal);white-space:pre-wrap}
+.spell-entry-ingreds{font-size:13px;color:var(--stone);margin-bottom:8px}
+.spell-entry-ingreds span{display:inline-block;background:var(--cream-dark);padding:2px 8px;margin:2px 4px 2px 0;border-radius:2px}
+.stat-card{padding:16px;background:white;border:1px solid var(--cream-dark);margin-bottom:8px}
+.stat-label{font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.stat-value{font-size:24px;font-family:'Cormorant Garamond',serif;font-weight:600;color:var(--black)}
+.stat-sub{font-size:12px;color:var(--stone);margin-top:2px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--cream-dark);font-size:14px}
+.stat-row:last-child{border-bottom:none}
+.stat-row-label{text-transform:capitalize}
 </style>
 </head>
 <body>
@@ -85,6 +118,7 @@ details[open]>.supply-toggle{border-bottom:none;border-radius:2px 2px 0 0}
 <button class="tab active" onclick="switchTab('lookup')">By Intention</button>
 <button class="tab" onclick="switchTab('reverse')">Reverse Lookup</button>
 <button class="tab" onclick="switchTab('supplies')">What Do I Have</button>
+<button class="tab" onclick="switchTab('spells')">Spell Log</button>
 </div>
 </div>
 </div>
@@ -107,6 +141,41 @@ details[open]>.supply-toggle{border-bottom:none;border-radius:2px 2px 0 0}
 <p style="color:var(--stone);margin-bottom:16px;font-size:14px">Check what you have on hand.</p>
 <div id="supplyChecks"></div>
 <div id="supplyResults" style="margin-top:24px"></div>
+</div>
+
+<div id="p-spells" class="panel">
+
+<div style="display:flex;gap:8px;margin-bottom:24px">
+<button class="btn spell-sub-tab active" data-stab="log" onclick="switchSpellTab('log')">Log a Spell</button>
+<button class="btn spell-sub-tab" data-stab="history" onclick="switchSpellTab('history')">History</button>
+<button class="btn spell-sub-tab" data-stab="analysis" onclick="switchSpellTab('analysis')">Analysis</button>
+</div>
+
+<div id="stab-log" class="spell-panel active">
+<h3 style="font-size:18px;margin-bottom:20px">Log a New Spell</h3>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div><label class="sp-label">Intention</label><select id="spellIntention"><option value="">Choose intention...</option></select></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div><label class="sp-label">Date</label><input type="date" id="spellDate"></div>
+<div><label class="sp-label">Moon Phase</label><select id="spellMoon"><option value="new">New Moon</option><option value="waxing_crescent">Waxing Crescent</option><option value="first_quarter">First Quarter</option><option value="waxing_gibbous">Waxing Gibbous</option><option value="full">Full Moon</option><option value="waning_gibbous">Waning Gibbous</option><option value="last_quarter">Last Quarter</option><option value="waning_crescent">Waning Crescent</option></select></div>
+</div>
+<div id="spellIngredSection" style="display:none"><label class="sp-label">Ingredients Used</label><div id="spellIngredChecks" class="spell-ingred-grid"></div><input type="text" id="spellCustomIngred" placeholder="Custom ingredients (comma separated)" style="margin-top:8px"></div>
+<div><label class="sp-label">Notes</label><textarea id="spellNotes" rows="3"></textarea></div>
+<div><label class="sp-label">Outcome</label><div id="spellOutcome" class="spell-outcome-group"><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="pending" checked> <span class="badge badge-pending">Pending</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="success"> <span class="badge badge-success">Success</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="partial"> <span class="badge badge-partial">Partial</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="fail"> <span class="badge badge-fail">Fail</span></label></div></div>
+<div><button class="btn" onclick="saveSpell()">Save Spell</button></div>
+</div>
+</div>
+
+<div id="stab-history" class="spell-panel">
+<h3 style="font-size:18px;margin-bottom:20px">Spell History</h3>
+<div id="spellHistoryList"></div>
+</div>
+
+<div id="stab-analysis" class="spell-panel">
+<h3 style="font-size:18px;margin-bottom:20px">Pattern Analysis</h3>
+<div id="spellAnalysisContent"></div>
+</div>
+
 </div>
 
 </div>
@@ -266,6 +335,231 @@ function printSheet(intention) {
 
 // Init
 buildSupplies();
+
+// ===== SPELL LOG =====
+var SPELL_KEY = 'coven_spells';
+
+function getSpells() {
+  try { return JSON.parse(localStorage.getItem(SPELL_KEY) || '{"spells":[]}'); }
+  catch(e) { return {spells:[]}; }
+}
+function saveSpellsData(data) { localStorage.setItem(SPELL_KEY, JSON.stringify(data)); }
+
+// Moon phase calculation using known new moon reference (Jan 6, 2000) + synodic month
+var MOON_PHASE_NAMES = ['new','waxing_crescent','first_quarter','waxing_gibbous','full','waning_gibbous','last_quarter','waning_crescent'];
+var MOON_PHASE_LABELS = {new:'New Moon',waxing_crescent:'Waxing Crescent',first_quarter:'First Quarter',waxing_gibbous:'Waxing Gibbous',full:'Full Moon',waning_gibbous:'Waning Gibbous',last_quarter:'Last Quarter',waning_crescent:'Waning Crescent'};
+var KNOWN_NEW_MOON = new Date(2000, 0, 6, 18, 14, 0).getTime(); // Jan 6 2000 18:14 UTC
+var SYNODIC_MS = 29.53058770576 * 86400000;
+
+function getMoonPhase(dateStr) {
+  var d = new Date(dateStr + 'T12:00:00');
+  var diff = d.getTime() - KNOWN_NEW_MOON;
+  var phase = ((diff % SYNODIC_MS) + SYNODIC_MS) % SYNODIC_MS;
+  var day = phase / SYNODIC_MS;
+  var idx = Math.floor(day * 8) % 8;
+  return MOON_PHASE_NAMES[idx];
+}
+
+function getTodayISO() {
+  var d = new Date();
+  var m = ('0' + (d.getMonth()+1)).slice(-2);
+  var day = ('0' + d.getDate()).slice(-2);
+  return d.getFullYear() + '-' + m + '-' + day;
+}
+
+// Populate spell intention dropdown
+var spellSel = document.getElementById('spellIntention');
+Object.keys(DB).sort().forEach(function(key) {
+  var opt = document.createElement('option');
+  opt.value = key;
+  opt.textContent = key.replace(/_/g, ' ');
+  spellSel.appendChild(opt);
+});
+
+// Set default date to today
+document.getElementById('spellDate').value = getTodayISO();
+
+// Auto-calculate moon phase on date change
+document.getElementById('spellDate').addEventListener('change', function() {
+  if (this.value) document.getElementById('spellMoon').value = getMoonPhase(this.value);
+});
+
+// Auto-populate ingredients when intention selected
+spellSel.addEventListener('change', function() {
+  var sec = document.getElementById('spellIngredSection');
+  var cont = document.getElementById('spellIngredChecks');
+  var int = this.value;
+  if (!int || !DB[int]) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  var items = [];
+  var d = DB[int];
+  ['herbs','crystals','incense'].forEach(function(cat) {
+    if (Array.isArray(d[cat])) items = items.concat(d[cat]);
+  });
+  items.sort();
+  cont.innerHTML = items.map(function(item, i) {
+    return '<div class="check-item"><input type="checkbox" id="si-'+i+'" value="'+item+'" checked><label for="si-'+i+'">'+item+'</label></div>';
+  }).join('');
+});
+
+// Sub-tab switching
+function switchSpellTab(name) {
+  document.querySelectorAll('.spell-sub-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.spell-panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelector('[data-stab="'+name+'"]').classList.add('active');
+  document.getElementById('stab-'+name).classList.add('active');
+  if (name === 'history') renderSpellHistory();
+  if (name === 'analysis') renderSpellAnalysis();
+}
+
+// Save a spell
+function saveSpell() {
+  var intention = document.getElementById('spellIntention').value;
+  if (!intention) { alert('Please choose an intention.'); return; }
+  var checked = [];
+  document.querySelectorAll('#spellIngredChecks input:checked').forEach(function(cb){checked.push(cb.value)});
+  var custom = document.getElementById('spellCustomIngred').value.trim();
+  if (custom) {
+    custom.split(',').forEach(function(s){var t=s.trim();if(t)checked.push(t)});
+  }
+  var outcome = document.querySelector('input[name="spellOutcome"]:checked').value;
+  var data = getSpells();
+  data.spells.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    intention: intention,
+    date: document.getElementById('spellDate').value,
+    moon_phase: document.getElementById('spellMoon').value,
+    ingredients: checked,
+    notes: document.getElementById('spellNotes').value.trim(),
+    outcome: outcome,
+    created_at: new Date().toISOString()
+  });
+  saveSpellsData(data);
+  // Reset form
+  document.getElementById('spellIntention').value = '';
+  document.getElementById('spellDate').value = getTodayISO();
+  document.getElementById('spellMoon').value = getMoonPhase(getTodayISO());
+  document.getElementById('spellIngredSection').style.display = 'none';
+  document.getElementById('spellIngredChecks').innerHTML = '';
+  document.getElementById('spellCustomIngred').value = '';
+  document.getElementById('spellNotes').value = '';
+  document.querySelector('input[name="spellOutcome"][value="pending"]').checked = true;
+  alert('Spell logged successfully!');
+  renderSpellHistory();
+}
+
+function deleteSpell(id) {
+  if (!confirm('Delete this spell entry?')) return;
+  var data = getSpells();
+  data.spells = data.spells.filter(function(s){return s.id !== id});
+  saveSpellsData(data);
+  renderSpellHistory();
+  renderSpellAnalysis();
+}
+
+function toggleSpellDetails(id) {
+  var el = document.getElementById('sd-' + id);
+  if (el) el.classList.toggle('open');
+}
+
+function renderSpellHistory() {
+  var el = document.getElementById('spellHistoryList');
+  var data = getSpells();
+  var spells = data.spells.slice().sort(function(a,b){return b.date.localeCompare(a.date) || b.created_at.localeCompare(a.created_at)});
+  if (!spells.length) { el.innerHTML = '<p style="color:var(--stone-light);padding:16px 0">No spells logged yet. Log your first spell above!</p>'; return; }
+  el.innerHTML = spells.map(function(s) {
+    var badgeClass = 'badge-' + s.outcome;
+    var dateStr = s.date ? new Date(s.date+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : 'No date';
+    var ingreds = s.ingredients && s.ingredients.length ? s.ingredients.map(function(i){return '<span>'+i+'</span>'}).join('') : '<em style="color:var(--stone-light)">None recorded</em>';
+    return '<div class="spell-entry"><div class="spell-entry-header" onclick="toggleSpellDetails(\''+s.id+'\')"><div><strong style="text-transform:capitalize">'+s.intention.replace(/_/g,' ')+'</strong><div class="spell-entry-meta">'+dateStr+' · '+(MOON_PHASE_LABELS[s.moon_phase]||s.moon_phase)+'</div></div><div style="display:flex;align-items:center;gap:12px"><span class="badge '+badgeClass+'">'+s.outcome+'</span><span style="color:var(--stone-light);font-size:12px">▼</span></div></div><div id="sd-'+s.id+'" class="spell-entry-details"><div class="spell-entry-ingreds">'+ingreds+'</div>'+(s.notes?'<div class="spell-entry-notes">'+s.notes.replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>':'<em style="color:var(--stone-light);font-size:13px">No notes</em>')+'<div style="margin-top:12px;text-align:right"><button class="btn" style="background:var(--stone);font-size:10px;padding:6px 14px" onclick="deleteSpell(\''+s.id+'\')">Delete</button></div></div></div>';
+  }).join('');
+}
+
+function renderSpellAnalysis() {
+  var el = document.getElementById('spellAnalysisContent');
+  var data = getSpells();
+  var spells = data.spells;
+  if (!spells.length) { el.innerHTML = '<p style="color:var(--stone-light);padding:16px 0">No data to analyze yet. Log some spells first!</p>'; return; }
+
+  var total = spells.length;
+  var concluded = spells.filter(function(s){return s.outcome !== 'pending'});
+  var successCount = spells.filter(function(s){return s.outcome === 'success'}).length;
+  var successRate = concluded.length ? Math.round(successCount / concluded.length * 100) : 0;
+
+  // By moon phase
+  var phaseStats = {};
+  spells.forEach(function(s) {
+    if (s.outcome === 'pending') return;
+    var p = s.moon_phase || 'unknown';
+    if (!phaseStats[p]) phaseStats[p] = {total:0,success:0};
+    phaseStats[p].total++;
+    if (s.outcome === 'success') phaseStats[p].success++;
+  });
+
+  // By intention
+  var intStats = {};
+  spells.forEach(function(s) {
+    if (s.outcome === 'pending') return;
+    var int = s.intention;
+    if (!intStats[int]) intStats[int] = {total:0,success:0};
+    intStats[int].total++;
+    if (s.outcome === 'success') intStats[int].success++;
+  });
+
+  // Most common intentions
+  var intCounts = {};
+  spells.forEach(function(s) {
+    intCounts[s.intention] = (intCounts[s.intention]||0)+1;
+  });
+  var sortedInts = Object.keys(intCounts).sort(function(a,b){return intCounts[b]-intCounts[a]});
+
+  var html = '<div class="stat-card"><div class="stat-label">Total Spells Cast</div><div class="stat-value">'+total+'</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">Overall Success Rate</div><div class="stat-value">'+successRate+'%</div><div class="stat-sub">'+successCount+' of '+concluded.length+' concluded spells</div></div>';
+
+  // Best moon phase
+  var phaseEntries = Object.keys(phaseStats).map(function(p){
+    var pct = phaseStats[p].total > 0 ? Math.round(phaseStats[p].success / phaseStats[p].total * 100) : 0;
+    return {phase:p,pct:pct,total:phaseStats[p].total,success:phaseStats[p].success};
+  }).sort(function(a,b){return b.pct - a.pct || b.total - a.total});
+
+  html += '<div class="stat-card"><div class="stat-label">Success by Moon Phase</div>';
+  if (phaseEntries.length) {
+    phaseEntries.forEach(function(pe) {
+      html += '<div class="stat-row"><span class="stat-row-label">'+(MOON_PHASE_LABELS[pe.phase]||pe.phase)+'</span><span>'+pe.pct+'% ('+pe.success+'/'+pe.total+')</span></div>';
+    });
+  } else {
+    html += '<p style="font-size:14px;color:var(--stone)">No concluded spells yet</p>';
+  }
+  html += '</div>';
+
+  // By intention
+  var intEntries = Object.keys(intStats).map(function(int){
+    var pct = intStats[int].total > 0 ? Math.round(intStats[int].success / intStats[int].total * 100) : 0;
+    return {int:int,pct:pct,total:intStats[int].total,success:intStats[int].success};
+  }).sort(function(a,b){return b.pct - a.pct || b.total - a.total});
+
+  html += '<div class="stat-card"><div class="stat-label">Success by Intention</div>';
+  if (intEntries.length) {
+    intEntries.forEach(function(ie) {
+      html += '<div class="stat-row"><span class="stat-row-label">'+ie.int.replace(/_/g,' ')+'</span><span>'+ie.pct+'% ('+ie.success+'/'+ie.total+')</span></div>';
+    });
+  } else {
+    html += '<p style="font-size:14px;color:var(--stone)">No concluded spells yet</p>';
+  }
+  html += '</div>';
+
+  // Most common intentions
+  html += '<div class="stat-card"><div class="stat-label">Most Common Intentions</div>';
+  sortedInts.slice(0,5).forEach(function(int) {
+    html += '<div class="stat-row"><span class="stat-row-label">'+int.replace(/_/g,' ')+'</span><span>'+intCounts[int]+' spell'+(intCounts[int]>1?'s':'')+'</span></div>';
+  });
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+// Init moon phase on load
+document.getElementById('spellMoon').value = getMoonPhase(getTodayISO());
 </script>
 
 </body>
