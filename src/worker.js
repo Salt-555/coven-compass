@@ -141,7 +141,7 @@ async function handleDownload(request, env) {
 async function sendDownloadEmail(env, email) {
   if (!env.RESEND_KEY) { console.log('[email] RESEND_KEY not set, skipping'); return; }
 
-  const appUrl = `${env.BASE_URL}/app`;
+  const appUrl = `${env.BASE_URL}/app?access=unlocked`;
 
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -756,6 +756,13 @@ input[type="date"]:focus{border-color:var(--purple);box-shadow:0 0 0 2px var(--p
 .spell-sub-tab{font-size:10px;padding:8px 16px;background:var(--card);color:var(--silver-dim);border:1px solid var(--card-border)}
 .spell-sub-tab.active{background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dim) 100%);color:var(--white);border-color:transparent}
 .spell-panel{display:none}.spell-panel.active{display:block}
+.paywall{position:absolute;inset:0;background:var(--void);display:flex;align-items:center;justify-content:center;z-index:10;text-align:center;padding:24px}
+.paywall-card{max-width:360px}
+.paywall-card h3{font-size:22px;margin-bottom:12px}
+.paywall-card p{font-size:14px;color:var(--silver-dim);margin-bottom:24px;line-height:1.7}
+.paywall-card .price{font-family:'Cinzel',serif;font-size:28px;color:var(--amber);margin-bottom:4px}
+.paywall-card .note{font-size:12px;color:var(--muted);margin-bottom:24px}
+.panel{position:relative}
 .spell-ingred-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;max-height:180px;overflow-y:auto;padding:8px 0}
 .spell-outcome-group{display:flex;gap:16px;flex-wrap:wrap}
 .spell-outcome-opt{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;color:var(--silver)}
@@ -805,17 +812,49 @@ input[type="date"]:focus{border-color:var(--purple);box-shadow:0 0 0 2px var(--p
 </div>
 
 <div id="p-reverse" class="panel">
+<div class="paywall" id="pw-reverse">
+<div class="paywall-card">
+<h3>Unlock Full Access</h3>
+<p>Reverse Lookup lets you search by herb, crystal, or incense to find every intention it serves.</p>
+<div class="price">$7</div>
+<div class="note">One-time purchase. No subscription.</div>
+<a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="btn">Unlock Now</a>
+</div>
+</div>
+<div class="panel-content" id="pc-reverse">
 <input type="text" id="revInput" placeholder="Type an herb, crystal, or incense..." oninput="doReverse(this.value)">
 <div id="revResults"></div>
 </div>
+</div>
 
 <div id="p-supplies" class="panel">
+<div class="paywall" id="pw-supplies">
+<div class="paywall-card">
+<h3>Unlock Full Access</h3>
+<p>Check what supplies you have on hand and see which spells you can cast right now.</p>
+<div class="price">$7</div>
+<div class="note">One-time purchase. No subscription.</div>
+<a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="btn">Unlock Now</a>
+</div>
+</div>
+<div class="panel-content" id="pc-supplies">
 <p style="color:var(--silver-dim);margin-bottom:16px;font-size:14px">Check what you have on hand.</p>
 <div id="supplyChecks"></div>
 <div id="supplyResults" style="margin-top:24px"></div>
 </div>
+</div>
 
 <div id="p-spells" class="panel">
+<div class="paywall" id="pw-spells">
+<div class="paywall-card">
+<h3>Unlock Full Access</h3>
+<p>Log your spells, track outcomes, and discover patterns in your practice over time.</p>
+<div class="price">$7</div>
+<div class="note">One-time purchase. No subscription.</div>
+<a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="btn">Unlock Now</a>
+</div>
+</div>
+<div class="panel-content" id="pc-spells">
 
 <div style="display:flex;gap:8px;margin-bottom:24px">
 <button class="btn spell-sub-tab active" data-stab="log" onclick="switchSpellTab('log')">Log a Spell</button>
@@ -848,6 +887,7 @@ input[type="date"]:focus{border-color:var(--purple);box-shadow:0 0 0 2px var(--p
 <div id="spellAnalysisContent"></div>
 </div>
 
+</div>
 </div>
 
 </div>
@@ -893,11 +933,20 @@ Object.keys(DB).sort().forEach(function(key) {
   sel.appendChild(opt);
 });
 
+// Unlock check
+function checkUnlock(){
+  var unlocked = localStorage.getItem('cc_unlocked') === '1' || new URLSearchParams(location.search).get('access') === 'unlocked';
+  ['reverse','supplies','spells'].forEach(function(tab){
+    var pw = document.getElementById('pw-' + tab);
+    if(pw) pw.style.display = unlocked ? 'none' : 'flex';
+  });
+}
+
 // Tab switching
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
-  document.querySelector('[onclick="switchTab(\\'' + name + '\\')"]').classList.add('active');
+  document.querySelector('[onclick="switchTab(\'' + name + '\')"]').classList.add('active');
   document.getElementById('p-' + name).classList.add('active');
 }
 
@@ -1007,6 +1056,7 @@ function printSheet(intention) {
 
 // Init
 buildSupplies();
+checkUnlock();
 
 // ===== SPELL LOG =====
 var SPELL_KEY = 'coven_spells';
@@ -1276,8 +1326,8 @@ p{font-size:15px;color:var(--stone);margin-bottom:24px}
 <div class="container">
 <div class="divider"></div>
 <h1>You're in.</h1>
-<p>Your download is ready. A copy has also been sent to your email.</p>
-<a id="downloadBtn" href="{{DOWNLOAD_URL}}" class="download-btn">Download Package</a>
+<p>Your app is ready. A copy of your access link has also been sent to your email.</p>
+<a id="downloadBtn" href="/app" class="download-btn">Open Coven Compass</a>
 <div id="manualEntry" class="manual-entry" style="display:none">
 <p>Something went wrong. Enter your purchase email:</p>
 <input type="email" id="emailInput" placeholder="you@example.com">
@@ -1290,7 +1340,8 @@ p{font-size:15px;color:var(--stone);margin-bottom:24px}
       document.getElementById('downloadBtn').style.display='none';
       document.getElementById('manualEntry').style.display='block';
     } else {
-      setTimeout(function(){ window.location.href = '{{DOWNLOAD_URL}}'; }, 1500);
+      try { localStorage.setItem('cc_unlocked','1'); } catch(e){}
+      setTimeout(function(){ window.location.href = '/app'; }, 1500);
     }
     </script>
     <!-- Meta Pixel Code -->
