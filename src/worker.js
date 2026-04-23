@@ -174,7 +174,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coven Compass — Every Correspondence + Spell Tracker</title>
-  <meta name="description" content="Herbs, crystals, candles, days, moon phases — lookup every spell correspondence for any intention instantly. Track your spells. $12 one-time. No subscription.">
+  <meta name="description" content="Herbs, crystals, candles, days, moon phases — lookup every spell correspondence for any intention instantly. Track your spells. $7 one-time. No subscription.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
@@ -283,7 +283,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <p class="hero-label">Coven Compass</p>
       <h1>Look Up Any Correspondence.<br>Track Every Spell.</h1>
       <p class="subhead">Look up any correspondence. Log every spell you cast. See what actually works.</p>
-      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn">Get Coven Compass — $12</a>
+      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn">Get Coven Compass — $7</a>
       <p class="cta-note">One-time purchase. No subscription. Yours forever.</p>
     </div>
   </section>
@@ -478,7 +478,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         </div>
         <div class="compare-card compare-good">
           <div class="label">Coven Compass</div>
-          <div class="name">$12<span style="font-size:14px;color:var(--silver-dim)"> once</span></div>
+          <div class="name">$7<span style="font-size:14px;color:var(--silver-dim)"> once</span></div>
           <div class="price">All the same data + spell tracking. Yours forever.</div>
         </div>
       </div>
@@ -516,7 +516,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <div class="divider" style="margin-bottom:48px"></div>
       <h2>Your next ritual, fully planned<br>in seconds. Every one, tracked.</h2>
       <p>No subscription. No account. Just the answers you need — and a record of what works, forever.</p>
-      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn">Get Coven Compass — $12</a>
+      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn">Get Coven Compass — $7</a>
     </div>
   </section>
 
