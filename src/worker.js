@@ -205,7 +205,9 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     .demo-inner{padding:16px 20px}
     .demo-select{width:100%;background:var(--parchment);border:1.5px solid var(--card-border);border-radius:8px;padding:12px 16px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B4D8A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
     .demo-results{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .demo-blur-wrap{position:absolute;bottom:0;left:0;right:0;top:110px;background:rgba(250,248,243,.65);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:10;border-radius:8px}
+    .demo-results .demo-cat:nth-child(1){grid-column:1/-1}
+    .demo-results .demo-cat.blurred{filter:blur(4px);pointer-events:none}
+    .demo-blur-wrap{grid-column:1/-1;grid-row:3/-1;background:rgba(250,248,243,.65);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:10;border-radius:8px}
     .demo-blur-cta a{padding:14px 28px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-deep) 100%);color:#fff;border-radius:6px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;box-shadow:0 4px 20px rgba(107,77,138,.3);display:flex;align-items:center;gap:8px;transition:transform .15s,box-shadow .2s}
     .demo-blur-cta a:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(107,77,138,.4)}
     .demo-blur-cta .lock{font-size:14px}
@@ -316,9 +318,10 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
             <div class="demo-cat"><div class="demo-cat-label">Herbs</div><div class="demo-cat-val" id="demoHerbs"></div></div>
             <div class="demo-cat"><div class="demo-cat-label">Crystals</div><div class="demo-cat-val" id="demoCrystals"></div></div>
             <div class="demo-cat"><div class="demo-cat-label">Candle Color</div><div class="demo-cat-val" id="demoCandle"></div></div>
-            <div class="demo-cat"><div class="demo-cat-label">Best Day</div><div class="demo-cat-val" id="demoDay"></div></div>
-            <div class="demo-cat"><div class="demo-cat-label">Moon Phase</div><div class="demo-cat-val" id="demoMoon"></div></div>
-            <div class="demo-cat"><div class="demo-cat-label">Element</div><div class="demo-cat-val" id="demoElement"></div></div>
+            <div class="demo-cat blurred"><div class="demo-cat-label">Best Day</div><div class="demo-cat-val" id="demoDay"></div></div>
+            <div class="demo-cat blurred"><div class="demo-cat-label">Moon Phase</div><div class="demo-cat-val" id="demoMoon"></div></div>
+            <div class="demo-cat blurred"><div class="demo-cat-label">Element</div><div class="demo-cat-val" id="demoElement"></div></div>
+            <div class="demo-cat blurred"><div class="demo-cat-label">Incense</div><div class="demo-cat-val" id="demoIncense"></div></div>
             <div class="demo-blur-wrap">
               <div class="demo-blur-cta">
                 <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007"><span class="lock">&#128274;</span> Unlock All 7 Categories</a>
