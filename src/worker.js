@@ -204,21 +204,14 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     .demo-header span{margin-left:auto;font-size:10px;color:rgba(255,255,255,.6);font-family:'Inter',monospace;letter-spacing:.05em}
     .demo-inner{padding:16px 20px}
     .demo-select{width:100%;background:var(--parchment);border:1.5px solid var(--card-border);border-radius:8px;padding:12px 16px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B4D8A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
-    .demo-results{display:none;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+    .demo-results{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .demo-blur-wrap{position:absolute;bottom:0;left:0;right:0;top:110px;background:rgba(250,248,243,.65);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:10;border-radius:8px}
+    .demo-blur-cta a{padding:14px 28px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-deep) 100%);color:#fff;border-radius:6px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;box-shadow:0 4px 20px rgba(107,77,138,.3);display:flex;align-items:center;gap:8px;transition:transform .15s,box-shadow .2s}
+    .demo-blur-cta a:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(107,77,138,.4)}
+    .demo-blur-cta .lock{font-size:14px}
     .demo-cat{background:var(--parchment);border:1px solid var(--card-border);border-radius:8px;padding:14px 16px}
     .demo-cat-label{font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
     .demo-cat-val{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text);font-weight:500}
-    .demo-blur-wrap{position:relative;display:flex;align-items:stretch;gap:8px}
-    .demo-blur{flex:1 1 auto;background:var(--parchment);border:1px solid var(--card-border);border-radius:8px;padding:14px 16px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
-    .demo-blur-line{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text);font-weight:500;opacity:.15;filter:blur(3px);transition:opacity .3s,filter .3s}
-    .demo-blur::after{content:'';position:absolute;inset:0;background:rgba(250,248,243,.65);display:flex;align-items:center;justify-content:center}
-    .demo-blur-btn{position:relative;z-index:1}
-    .demo-blur-btn a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 16px;width:100%;height:100%;min-height:80px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-deep) 100%);border-radius:8px;text-decoration:none;color:#fff;transition:transform .15s,box-shadow .2s;box-shadow:0 4px 20px rgba(107,77,138,.3)}
-    .demo-blur-btn a:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(107,77,138,.4)}
-    .demo-blur-btn .lock{font-size:18px}
-    .demo-blur-btn .unlock-label{font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
-    .demo-blur-btn .unlock-sub{font-size:11px;opacity:.8;font-style:italic}
-    .demo-cta{text-align:center;padding:16px}
     .demo-cta-msg{font-size:12px;color:var(--muted);font-style:italic;margin-top:16px}
 
     /* HERO */
@@ -319,24 +312,18 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
           <select id="demoSelect" class="demo-select">
             <option value="">Choose an intention...</option>
           </select>
-          <div id="demoResults" class="demo-results">
+          <div id="demoResults" style="display:none;position:relative">
             <div class="demo-cat"><div class="demo-cat-label">Herbs</div><div class="demo-cat-val" id="demoHerbs"></div></div>
             <div class="demo-cat"><div class="demo-cat-label">Crystals</div><div class="demo-cat-val" id="demoCrystals"></div></div>
             <div class="demo-cat"><div class="demo-cat-label">Candle Color</div><div class="demo-cat-val" id="demoCandle"></div></div>
+            <div class="demo-cat"><div class="demo-cat-label">Best Day</div><div class="demo-cat-val" id="demoDay"></div></div>
+            <div class="demo-cat"><div class="demo-cat-label">Moon Phase</div><div class="demo-cat-val" id="demoMoon"></div></div>
+            <div class="demo-cat"><div class="demo-cat-label">Element</div><div class="demo-cat-val" id="demoElement"></div></div>
             <div class="demo-blur-wrap">
-              <div class="demo-blur">
-                <div class="demo-blur-line" id="demoDay">Saturday</div>
-                <div class="demo-blur-line" id="demoMoon">Waning</div>
-                <div class="demo-blur-line" id="demoElement">Earth</div>
-                <div class="demo-blur-line" id="demoIncense">Dragon's blood, frankincense</div>
+              <div class="demo-blur-cta">
+                <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007"><span class="lock">&#128274;</span> Unlock All 7 Categories</a>
               </div>
-              <div class="demo-blur-btn" style="flex:0 0 auto;width:100%;max-width:200px;">
-                <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007">
-                  <span class="lock">&#128274;</span>
-                  <span class="unlock-label">Unlock 4 more</span>
-                  <span class="unlock-sub">$12 once</span>
-                </a>
-              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -352,7 +339,8 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     sel.addEventListener('change', function(){
       var d = DB[this.value], r = document.getElementById('demoResults');
       if(!d){r.style.display='none'; return;}
-      r.style.display = 'grid';
+      r.style.display = null;
+      r.className = 'demo-results';
       document.getElementById('demoHerbs').textContent = d.herbs;
       document.getElementById('demoCrystals').textContent = d.crystals;
       document.getElementById('demoCandle').textContent = d.candle;
