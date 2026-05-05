@@ -335,7 +335,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     </section>
   </div>
 
-  <!-- DEMO PREVIEW -->
+<!-- DEMO PREVIEW -->
   <section style="padding: 80px 0; background: var(--void);">
     <div class="container">
       <p class="section-label">See It In Action</p>
@@ -347,80 +347,41 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
           <div style="width: 10px; height: 10px; border-radius: 50%; background: #5A9A5A;"></div>
           <span style="margin-left: auto; font-size: 11px; color: var(--muted); font-family: 'Inter', monospace;">coven-compass</span>
         </div>
-        <!-- Search input mockup -->
+        <!-- Intention Select -->
         <div style="padding: 20px 20px 12px;">
-          <div style="display: flex; align-items: center; gap: 10px; background: var(--deep); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px 16px;">
-            <span style="color: var(--purple); font-size: 16px;">&#9906;</span>
-            <span style="font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--white); letter-spacing: 0.02em;">protection</span>
-            <span style="margin-left: auto; font-size: 10px; color: var(--muted); background: var(--card-border); padding: 2px 8px; border-radius: 4px;">Enter</span>
-          </div>
+          <select id="demoSelect" style="width: 100%; background: var(--deep); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px 16px; font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--white); cursor: pointer; appearance: none; -webkit-appearance: none;">
+            <option value="">Choose an intention...</option>
+          </select>
         </div>
-        <!-- Results mockup -->
-        <div style="padding: 0 20px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <div style="background: var(--deep); border-radius: 8px; padding: 14px 16px;">
-            <p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Herbs</p>
-            <p style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);">Rosemary, Sage, Basil</p>
-          </div>
-          <div style="background: var(--deep); border-radius: 8px; padding: 14px 16px;">
-            <p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Crystals</p>
-            <p style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);">Black Tourmaline, Obsidian</p>
-          </div>
-          <div style="background: var(--deep); border-radius: 8px; padding: 14px 16px;">
-            <p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Candles</p>
-            <p style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);">Black, White, Blue</p>
-          </div>
-          <div style="background: var(--deep); border-radius: 8px; padding: 14px 16px;">
-            <p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Day</p>
-            <p style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);">Saturday</p>
-          </div>
-          <div style="background: var(--deep); border-radius: 8px; padding: 14px 16px;">
-            <p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Moon Phase</p>
-            <p style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);">Waning</p>
-          </div>
-          <div style="background: var(--deep); border-radius: 8px; padding: 14px 16px;">
-            <p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Incense</p>
-            <p style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);">Dragon's Blood</p>
+        <!-- Results Preview (first 3 categories) -->
+        <div id="demoResults" style="padding: 0 20px 20px; grid-template-columns: 1fr 1fr; gap: 8px; display: none;">
+          <div><p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Herbs</p><p id="demoHerbs" style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);"></p></div>
+          <div><p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Crystals</p><p id="demoCrystals" style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);"></p></div>
+          <div><p style="font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;">Candle Color</p><p id="demoCandle" style="font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--white);"></p></div>
+          <div style="display: flex; align-items: center; justify-content: center;">
+            <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" style="display: inline-block; padding: 10px 16px; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dim) 100%); color: var(--white); border-radius: 6px; transition: transform 0.15s; box-shadow: 0 4px 20px rgba(139,111,192,0.3); text-decoration: none;">Get all 7 categories</a>
           </div>
         </div>
       </div>
-      <p style="text-align: center; color: var(--muted); font-size: 13px; margin-top: 20px; font-style: italic;">Every correspondence for "protection" — all seven categories, one screen, instant.</p>
-
-      <!-- Spell Tracker Demo -->
-      <div style="max-width: 560px; margin: 40px auto 0;">
-        <p class="section-label">Spell Tracker</p>
-        <div style="background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden;">
-          <div style="background: var(--deep); padding: 12px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--card-border);">
-            <span style="margin-left: auto; font-size: 11px; color: var(--muted); font-family: 'Inter', monospace;">spell-log</span>
-          </div>
-          <div style="padding: 16px 20px; border-bottom: 1px solid var(--card-border);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <p style="font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--white);">Protection Ritual</p>
-              <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(90, 154, 90, 0.15); color: #5A9A5A; padding: 3px 10px; border-radius: 20px;">✓ Worked</span>
-            </div>
-            <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--silver-dim); margin-bottom: 10px;">
-              <span>🌙 Waning Moon</span>
-              <span>📅 Mar 15, 2026</span>
-              <span>🕯️ Saturday</span>
-            </div>
-            <div style="background: var(--deep); border-radius: 6px; padding: 10px 14px; font-size: 13px; color: var(--silver-dim); line-height: 1.5;">
-              <span style="color: var(--purple);">Ingredients:</span> Rosemary, black tourmaline, white candle, dragon's blood incense
-            </div>
-          </div>
-          <div style="padding: 16px 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <p style="font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--white);">Love Attraction</p>
-              <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(212, 168, 87, 0.15); color: var(--amber); padding: 3px 10px; border-radius: 20px;">◐ Pending</span>
-            </div>
-            <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--silver-dim);">
-              <span>🌕 Full Moon</span>
-              <span>📅 Apr 2, 2026</span>
-              <span>🕯️ Friday</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <p style="text-align: center; color: var(--muted); font-size: 13px; margin-top: 20px; font-style: italic;">Pick an intention above. Get a taste. Unlock all 7 categories for $12.</p>
     </div>
   </section>
+
+  <script>
+  (function(){
+    var DB={'protection':{herbs:'Rosemary, Sage, Basil',crystals:'Black Tourmaline, Obsidian',candle:'Black or White'},'love':{herbs:'Rose, Lavender, Jasmine',crystals:'Rose Quartz, Rhodonite',candle:'Pink or Red'},'prosperity':{herbs:'Basil, Cinnamon, Mint',crystals:'Citrine, Pyrite',candle:'Green or Gold'},'healing':{herbs:'Lavender, Chamomile, Eucalyptus',crystals:'Amethyst, Clear Quartz',candle:'Blue or Green'},'banishing':{herbs:'Black Pepper, Cayenne, Garlic',crystals:'Obsidian, Black Tourmaline',candle:'Black'},'purification':{herbs:'Sage, Lavender, Rosemary',crystals:'Selenite, Clear Quartz',candle:'White'},'divination':{herbs:'Mugwort, Yarrow, Bay Leaf',crystals:'Amethyst, Moonstone',candle:'Purple or Silver'},'courage':{herbs:'Thyme, Basil, Bay Leaf',crystals:'Carnelian, Tiger Eye',candle:'Red or Orange'},'wisdom':{herbs:'Sage, Bay Leaf, Mugwort',crystals:'Lapis Lazuli, Sodalite',candle:'Blue or Purple'},'peace':{herbs:'Lavender, Chamomile, Lemon Balm',crystals:'Blue Lace Agate, Angelite',candle:'Blue or White'},'success':{herbs:'Bay Leaf, Basil, Bergamot',crystals:'Citrine, Tiger Eye',candle:'Gold or Orange'},'fertility':{herbs:'Basil, Jasmine, Mint',crystals:'Moonstone, Rose Quartz',candle:'Green or Pink'},'psychic_ability':{herbs:'Mugwort, Lavender, Acacia',crystals:'Amethyst, Moonstone',candle:'Purple or Silver'},'communication':{herbs:'Lavender, Lemongrass, Peppermint',crystals:'Blue Lace Agate, Aquamarine',candle:'Yellow or Blue'},'wealth':{herbs:'Alfalfa, Bay Leaf, Cinnamon',crystals:'Pyrite, Citrine, Green Jade',candle:'Green or Gold'},'grounding':{herbs:'Vetiver, Patchouli, Cedar',crystals:'Black Tourmaline, Hematite',candle:'Brown or Black'},'dreamwork':{herbs:'Mugwort, Lavender, Chamomile',crystals:'Amethyst, Moonstone',candle:'Purple or Silver'},'new_beginnings':{herbs:'Basil, Bay Leaf, Bergamot',crystals:'Moonstone, Clear Quartz',candle:'White or Green'},'self_love':{herbs:'Rose, Lavender, Jasmine',crystals:'Rose Quartz, Rhodonite',candle:'Pink'},'clarity':{herbs:'Peppermint, Rosemary, Lemongrass',crystals:'Clear Quartz, Fluorite',candle:'White or Yellow'},'release':{herbs:'Black Pepper, Cayenne, Dragon Blood',crystals:'Obsidian, Smoky Quartz',candle:'Black or Dark Blue'},'abundance':{herbs:'Alfalfa, Basil, Cinnamon',crystals:'Citrine, Green Aventurine',candle:'Green or Gold'},'intuition':{herbs:'Mugwort, Acacia, Bay Leaf',crystals:'Amethyst, Moonstone',candle:'Purple or Silver'},'transformation':{herbs:'Dragon Blood, Fern, Flax',crystals:'Labradorite, Obsidian',candle:'Purple or Black'},'friendship':{herbs:'Rose, Lavender, Chamomile',crystals:'Rose Quartz, Green Aventurine',candle:'Pink or Yellow'},'justice':{herbs:'Chamomile, Clove, Dragon Blood',crystals:'Lapis Lazuli, Sodalite',candle:'Blue or Purple'},'travel_safety':{herbs:'Bay Leaf, Lavender, Chamomile',crystals:'Turquoise, Malachite',candle:'Blue or Yellow'},'sleep':{herbs:'Lavender, Chamomile, Valerian',crystals:'Amethyst, Moonstone',candle:'Blue or Purple'},'strength':{herbs:'Cayenne, Cinnamon, Ginger',crystals:'Tiger Eye, Carnelian',candle:'Red or Orange'},'creativity':{herbs:'Bay Leaf, Bergamot, Cinnamon',crystals:'Carnelian, Citrine',candle:'Orange or Yellow'}};
+    var sel = document.getElementById('demoSelect');
+    Object.keys(DB).sort().forEach(function(k){var o = document.createElement('option'); o.value = k; o.textContent = k.replace(/_/g, ' '); sel.appendChild(o);});
+    sel.addEventListener('change', function(){
+      var d = DB[this.value], r = document.getElementById('demoResults');
+      if(!d){r.style.display='none'; return;}
+      r.style.display = 'grid';
+      document.getElementById('demoHerbs').textContent = d.herbs;
+      document.getElementById('demoCrystals').textContent = d.crystals;
+      document.getElementById('demoCandle').textContent = d.candle;
+    });
+  })();
+  </script>
 
   <!-- FOR NEW WITCHES -->
   <section style="padding: 80px 0; background: var(--deep); border-top: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border);">
