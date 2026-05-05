@@ -208,6 +208,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     .demo-results .demo-cat:nth-child(1){grid-column:1/-1}
     .demo-results .demo-cat.blurred{filter:blur(4px);pointer-events:none}
     .demo-blur-wrap{position:absolute;left:0;right:0;background:rgba(250,248,243,.65);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:10;border-radius:8px;pointer-events:none}
+    .demo-blur-cta{pointer-events:auto}
     .demo-blur-cta a{padding:14px 28px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-deep) 100%);color:#fff;border-radius:6px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;box-shadow:0 4px 20px rgba(107,77,138,.3);display:flex;align-items:center;gap:8px;transition:transform .15s,box-shadow .2s}
     .demo-blur-cta a:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(107,77,138,.4)}
     .demo-blur-cta .lock{font-size:14px}
