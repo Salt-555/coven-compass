@@ -499,6 +499,8 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     </div>
   </footer>
 
+
+  <script src="https://allmind.biz/src/tracker.js" data-source="coven-compass"></script>
 </body>
 </html>
 `;
