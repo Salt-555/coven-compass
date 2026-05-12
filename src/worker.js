@@ -175,6 +175,8 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coven Compass — Every Correspondence + Spell Tracker</title>
   <meta name="description" content="Herbs, crystals, candles, days, moon phases — lookup every spell correspondence for any intention instantly. Track your spells. $12 one-time. No subscription.">
+  <!-- Meta Pixel Code -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','947012561524608');fbq('track','PageView');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
@@ -373,7 +375,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <p class="hero-label">Coven Compass</p>
       <h1>Your Entire Practice.<br>One Price. Forever.</h1>
       <p class="subhead">Herbs, crystals, candles, days, moon phases — every correspondence for any intention. Plus a spell tracker that shows you what actually works. All for $12. One time.</p>
-      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn">Get Coven Compass — $12</a>
+      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:12.00,currency:'USD'})">Get Coven Compass — $12</a>
       <p class="cta-note"><strong>No subscription.</strong> No monthly fees. No account required. Yours permanently.</p>
     </div>
   </section>
@@ -488,7 +490,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <div class="divider" style="margin-bottom:48px"></div>
       <h2>Your next ritual, fully planned<br>in seconds. Every one, tracked.</h2>
       <p>Less than half the cost of one month of a subscription app. Yours forever.</p>
-      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn">Get Coven Compass — $12</a>
+      <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:12.00,currency:'USD'})">Get Coven Compass — $12</a>
     </div>
   </section>
 
