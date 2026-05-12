@@ -499,8 +499,6 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     </div>
   </footer>
 
-
-  <script src="https://allmind.biz/src/tracker.js" data-source="coven-compass"></script>
 </body>
 </html>
 `;
@@ -1218,12 +1216,12 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '{{META_PIXEL_ID}}');
+fbq('init', '947012561524608');
 fbq('track', 'PageView');
-fbq('track', 'Purchase', {value: {{PRODUCT_PRICE}}, currency: 'USD'});
+fbq('track', 'Purchase', {value: 12.00, currency: 'USD'});
 </script>
 <noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id={{META_PIXEL_ID}}&ev=PageView&noscript=1"/></noscript>
+src="https://www.facebook.com/tr?id=947012561524608&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel Code -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap');
