@@ -1,8 +1,9 @@
 # Coven Compass
 
-Deployed: https://coven-compass.seanalt555.workers.dev
+Mystical spell tracker app — herbs, crystals, candles, days, moon phases. Track spells. $12 one-time.
 
-## Redeploy
-```bash
-python3 ~/.hermes/skills/business/mvp-storefront/scripts/deploy_worker.py mvp coven-compass ~/.hermes/mvps/coven-compass/src/worker.js
-```
+**Live:** https://coven-compass.allmind.biz/app
+
+## Files
+- `src/worker.js` — Cloudflare Worker (landing + app + success pages)
+- `deploy-worker.py` — Deploy script

@@ -13,8 +13,9 @@ metadata = {
     "bindings": [
         {"type": "kv_namespace", "name": "SIGNUPS", "namespace_id": "719553a81859450596759c37f5727a7c"},
         {"type": "kv_namespace", "name": "CUSTOMERS", "namespace_id": "8635044516fa443c9dd502e56d7d9a22"},
-        {"type": "kv_namespace", "name": "SALES", "namespace_id": "3756a16f13a54999a2d5d7e55981b6af"},
+        {"type": "kv_namespace", "name": "SALES_TRACKING", "namespace_id": "3756a16f13a54999a2d5d7e55981b6af"},
         {"type": "plain_text", "name": "BASE_URL", "text": "https://coven-compass.allmind.biz"},
+        {"type": "secret_text", "name": "RESEND_KEY", "text": os.environ.get("RESEND_KEY", "")},
     ]
 }
 

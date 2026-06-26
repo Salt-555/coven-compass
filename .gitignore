@@ -1,1 +1,17 @@
-node_modules/\n.env\ndeploy-metadata.json\n*.pyc
+# Cloudflare
+.wrangler/
+node_modules/
+
+# Backups (keep only the most recent)
+src/worker.js.backup.*
+src/worker.js.bak.*
+
+# Temp files
+/tmp/*
+CHANGELOG.md
+IMPLEMENTATION_SUMMARY.md
+SPELL_TRACKER_PLAN.md
+
+# OS
+.DS_Store
+Thumbs.db

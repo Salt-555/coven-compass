@@ -65,7 +65,7 @@ async function handleWebhook(request, env) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    let email = session.metadata?.email || session.customer_email || null;
+    let email = session.customer_details?.email || session.customer_email || session.metadata?.email || null;
 
     try {
       // Extract idea_id: prefer session metadata, fallback to line item product metadata
@@ -217,12 +217,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     .demo-select{width:100%;background:rgba(255,255,255,.04);border:1.5px solid var(--card-border);border-radius:10px;padding:14px 18px;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--text);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239B93A8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;transition:border-color .2s}
     .demo-select:focus{outline:none;border-color:var(--gold)}
     .demo-results{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
-    .demo-results .demo-cat:nth-child(1){grid-column:1/-1}
-    .demo-results .demo-cat.blurred{filter:blur(5px);user-select:none;pointer-events:none}
-    .demo-blur-wrap{position:absolute;left:0;right:0;background:rgba(8,6,14,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:10;border-radius:8px;pointer-events:none}
-    .demo-blur-cta{pointer-events:auto;text-align:center;padding:16px 24px}
-    .demo-blur-cta a{padding:14px 32px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dim) 100%);color:#0D0B12;border-radius:8px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(196,162,101,.3);transition:all .2s}
-    .demo-blur-cta a:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(196,162,101,.4)}
+    .demo-results .demo-cat:nth-child(1){grid-column:1/-1}\n    .demo-results .demo-cat.locked{filter:blur(5px);user-select:none;pointer-events:none}\n    .demo-blur-wrap{position:absolute;left:0;right:0;background:rgba(8,6,14,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:10;border-radius:8px;pointer-events:none}\n    .demo-blur-cta{pointer-events:auto;text-align:center;padding:16px 24px}\n    .demo-blur-cta a{padding:14px 32px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dim) 100%);color:#0D0B12;border-radius:8px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(196,162,101,.3);transition:all .2s}\n    .demo-blur-cta a:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(196,162,101,.4)}
     .demo-cat{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:10px;padding:16px 18px}
     .demo-cat-label{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
     .demo-cat-val{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text);line-height:1.4}
@@ -290,7 +285,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     /* ─── FINAL CTA ─── */
     .final-cta{padding:100px 0;text-align:center;background:radial-gradient(ellipse at 50% 80%,rgba(196,162,101,.06) 0%,transparent 50%),var(--bg)}
     .final-cta h2{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,42px);font-weight:600;color:#fff;margin-bottom:16px;line-height:1.2}
-    .final-cta p{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--muted);margin-bottom:36px;font-style:italic;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
+    .final-cta p{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--muted);margin-bottom:8px;font-style:italic;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
 
     /* ─── STICKY CTA ─── */
     .sticky-cta{position:fixed;bottom:0;left:0;right:0;background:rgba(13,11,18,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--card-border);padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:20px;z-index:100;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
@@ -340,7 +335,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     <div class="container">
       <p class="demo-label">Try It Free</p>
       <div class="demo-card">
-        <p class="demo-prompt">Pick an intention. See your first 3 categories free.</p>
+        <p class="demo-prompt">Pick an intention. See 5 of 7 categories free.</p>
         <select id="demoSelect" class="demo-select">
           <option value="">Choose an intention...</option>
         </select>
@@ -348,18 +343,18 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
           <div class="demo-cat"><div class="demo-cat-label">Herbs</div><div class="demo-cat-val" id="demoHerbs"></div></div>
           <div class="demo-cat"><div class="demo-cat-label">Crystals</div><div class="demo-cat-val" id="demoCrystals"></div></div>
           <div class="demo-cat"><div class="demo-cat-label">Candle Color</div><div class="demo-cat-val" id="demoCandle"></div></div>
-          <div class="demo-cat blurred"><div class="demo-cat-label">Best Day</div><div class="demo-cat-val" id="demoDay"></div></div>
-          <div class="demo-cat blurred"><div class="demo-cat-label">Moon Phase</div><div class="demo-cat-val" id="demoMoon"></div></div>
-          <div class="demo-cat blurred"><div class="demo-cat-label">Element</div><div class="demo-cat-val" id="demoElement"></div></div>
-          <div class="demo-cat blurred"><div class="demo-cat-label">Incense</div><div class="demo-cat-val" id="demoIncense"></div></div>
+          <div class="demo-cat"><div class="demo-cat-label">Best Day</div><div class="demo-cat-val" id="demoDay"></div></div>
+          <div class="demo-cat"><div class="demo-cat-label">Moon Phase</div><div class="demo-cat-val" id="demoMoon"></div></div>
+          <div class="demo-cat locked"><div class="demo-cat-label">Element</div><div class="demo-cat-val" id="demoElement"></div></div>
+          <div class="demo-cat locked"><div class="demo-cat-label">Incense</div><div class="demo-cat-val" id="demoIncense"></div></div>
           <div class="demo-blur-wrap">
             <div class="demo-blur-cta">
-              <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007"><span>&#128274;</span> Unlock All 7 Categories</a>
+              <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007"><span>&#128274;</span> Unlock Elements + Incense</a>
             </div>
           </div>
         </div>
       </div>
-      <p class="demo-cta-msg">This is just 3 of 7 categories. Get the full set — and the spell tracker — for $12 once.</p>
+      <p class="demo-cta-msg">That's 5 of 7 categories. Get the full set — plus your spell tracker — for $12 once.</p>
     </div>
   </section>
 
@@ -383,7 +378,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       if(typeof fbq==='function')fbq('track','ViewContent');
       requestAnimationFrame(function(){
         var blur = r.querySelector('.demo-blur-wrap');
-        var firstBlurred = r.querySelector('.demo-cat.blurred');
+        var firstBlurred = r.querySelector('.demo-cat.locked');
         if(blur && firstBlurred){
           var rect = firstBlurred.getBoundingClientRect();
           var containerRect = r.getBoundingClientRect();
@@ -495,6 +490,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         <div class="faq-item"><p class="faq-q">Is this for beginners or experienced practitioners?</p><p class="faq-a">Both. Beginners get a reliable reference that saves hours of research. Experienced witches get the spell tracker — the one feature you won't find anywhere else free.</p></div>
         <div class="faq-item"><p class="faq-q">What if I already have a Book of Shadows?</p><p class="faq-a">Coven Compass doesn't replace your BoS — it complements it. Use it for quick lookups before you cast, then log the results in your tracker to build your own evidence-based practice.</p></div>
         <div class="faq-item"><p class="faq-q">Will there be a subscription later?</p><p class="faq-a">No. The $12 is forever. No hidden fees, no "premium tier" coming soon, no bait-and-switch. You buy it once and it's yours.</p></div>
+        <div class="faq-item"><p class="faq-q">What if I don't love it?</p><p class="faq-a">Write us at support@allmind.biz within 7 days of purchase — I'll refund you, no questions asked. No hard feelings. But honestly? People keep this bookmarked forever.</p></div>
       </div>
     </div>
   </section>
@@ -861,6 +857,7 @@ input[type="date"]:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--p
 
 <!-- SUPPLIES PANEL -->
 <div id="p-supplies" class="panel">
+  <input type="text" id="suppliesSearch" placeholder="Filter herbs, crystals..." oninput="filterSupplies(this.value)" style="margin-bottom:16px;width:100%;padding:14px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:300;border:1px solid var(--border);background:var(--card);color:var(--silver);border-radius:8px;outline:none">
   <p class="hint">Check what you have on hand to find matching intentions.</p>
   <div id="supplyChecks"></div>
   <div id="supplyResults" style="margin-top:24px"></div>
@@ -885,7 +882,7 @@ input[type="date"]:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--p
           <div><label class="sp-label">Date Cast</label><input type="date" id="spellDate"></div>
           <div><label class="sp-label">Moon Phase</label><select id="spellMoon"><option value="new">New Moon</option><option value="waxing_crescent">Waxing Crescent</option><option value="first_quarter">First Quarter</option><option value="waxing_gibbous">Waxing Gibbous</option><option value="full">Full Moon</option><option value="waning_gibbous">Waning Gibbous</option><option value="last_quarter">Last Quarter</option><option value="waning_crescent">Waning Crescent</option></select></div>
         </div>
-        <div id="spellIngredSection" style="display:none"><label class="sp-label">Ingredients Used</label><div id="spellIngredChecks" class="spell-ingred-grid"></div><input type="text" id="spellCustomIngred" placeholder="Add custom ingredients (comma separated)" style="margin-top:8px"></div>
+        <div id="spellIngredSection"><label class="sp-label">Ingredients Used</label><div id="spellIngredChecks" class="spell-ingred-grid"></div><input type="text" id="spellCustomIngred" placeholder="Add custom ingredients (comma separated)" style="margin-top:8px"></div>
         <div><label class="sp-label">Notes</label><textarea id="spellNotes" rows="3" placeholder="What happened? Any signs or synchronicities?"></textarea></div>
         <div><label class="sp-label">Outcome</label><div id="spellOutcome" class="spell-outcome-group"><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="pending" checked> <span class="badge badge-pending">Pending</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="success"> <span class="badge badge-success">Success</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="partial"> <span class="badge badge-partial">Partial</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="fail"> <span class="badge badge-fail">Fail</span></label></div></div>
         <div><button class="btn" onclick="saveSpell()">Save Entry</button></div>
@@ -895,7 +892,7 @@ input[type="date"]:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--p
 
   <!-- HISTORY -->
   <div id="stab-history" class="spell-panel">
-    <h3 style="font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--white);margin-bottom:20px;letter-spacing:.03em">Spell History</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><h3 style="font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--white);letter-spacing:.03em">Spell History</h3><button class="btn" style="background:rgba(255,255,255,.08);font-size:11px;padding:7px 14px;cursor:pointer;border-radius:6px;color:var(--text)" onclick="exportSpellsCSV()">Export CSV</button></div>
     <div id="spellHistoryList"></div>
   </div>
 
@@ -995,6 +992,9 @@ function doReverse(q) {
 }
 
 // Supplies mode
+var allSupplyItems = [];
+var supplyCategories = {herbs:[], crystals:[]};
+
 function buildSupplies() {
   var herbs = [];
   var crystals = [];
@@ -1006,13 +1006,15 @@ function buildSupplies() {
     else crystals.push(item);
   });
   herbs.sort(); crystals.sort();
+  allSupplyItems = [...herbs, ...crystals];
+  supplyCategories = {herbs: herbs, crystals: crystals};
 
   function renderSection(label, items) {
     var html = '<details class="supply-group">';
     html += '<summary class="supply-toggle">' + label + ' <span style="color:var(--muted);font-weight:300;font-size:11px">(' + items.length + ')</span></summary>';
     html += '<div class="supply-items">';
     items.forEach(function(item) {
-      html += '<div class="check-item"><input type="checkbox" id="s-' + item + '" data-item="' + item + '" onchange="calcMatches()"><label for="s-' + item + '">' + item + '</label></div>';
+      html += '<div class="check-item" data-supply-name="' + item.toLowerCase() + '"><input type="checkbox" id="s-' + item + '" data-item="' + item + '" onchange="calcMatches()"><label for="s-' + item + '">' + item + '</label></div>';
     });
     html += '</div></details>';
     return html;
@@ -1021,6 +1023,31 @@ function buildSupplies() {
   var html = renderSection('Herbs', herbs);
   html += renderSection('Crystals', crystals);
   document.getElementById('supplyChecks').innerHTML = html;
+}
+
+
+function filterSupplies(q) {
+  q = q.toLowerCase().trim();
+  if (!q) { buildSupplies(); return; }
+  var filteredHerbs = supplyCategories.herbs.filter(function(h){return h.toLowerCase().indexOf(q) >= 0});
+  var filteredCrystals = supplyCategories.crystals.filter(function(c){return c.toLowerCase().indexOf(q) >= 0});
+
+  function renderSection(label, items) {
+    if (!items.length) return '';
+    var html = '<details class="supply-group" open>';
+    html += '<summary class="supply-toggle">' + label + ' <span style="color:var(--muted);font-weight:300;font-size:11px">(' + items.length + ')</span></summary>';
+    html += '<div class="supply-items">';
+    items.forEach(function(item) {
+      var matchClass = item.toLowerCase().indexOf(q) >= 0 ? '' : '';
+      html += '<div class="check-item"><input type="checkbox" id="s-' + item + '" data-item="' + item + '" onchange="calcMatches()"><label for="s-' + item + '">' + item + '</label></div>';
+    });
+    html += '</div></details>';
+    return html;
+  }
+
+  var html = renderSection('Herbs', filteredHerbs);
+  html += renderSection('Crystals', filteredCrystals);
+  document.getElementById('supplyChecks').innerHTML = html || '<p style="padding:20px;color:var(--muted)">No matches found.</p>';
 }
 
 
@@ -1119,24 +1146,6 @@ document.getElementById('spellDate').addEventListener('change', function() {
   if (this.value) document.getElementById('spellMoon').value = getMoonPhase(this.value);
 });
 
-// Auto-populate ingredients when intention selected
-spellSel.addEventListener('change', function() {
-  var sec = document.getElementById('spellIngredSection');
-  var cont = document.getElementById('spellIngredChecks');
-  var int = this.value;
-  if (!int || !DB[int]) { sec.style.display = 'none'; return; }
-  sec.style.display = 'block';
-  var items = [];
-  var d = DB[int];
-  ['herbs','crystals','incense'].forEach(function(cat) {
-    if (Array.isArray(d[cat])) items = items.concat(d[cat]);
-  });
-  items.sort();
-  cont.innerHTML = items.map(function(item, i) {
-    return '<div class="check-item"><input type="checkbox" id="si-'+i+'" value="'+item+'" checked><label for="si-'+i+'">'+item+'</label></div>';
-  }).join('');
-});
-
 // Sub-tab switching
 function switchSpellTab(name) {
   document.querySelectorAll('.spell-sub-tab').forEach(function(t){t.classList.remove('active')});
@@ -1150,7 +1159,7 @@ function switchSpellTab(name) {
 // Save a spell
 function saveSpell() {
   var intention = document.getElementById('spellIntention').value;
-  if (!intention) { alert('Please choose an intention.'); return; }
+  if (!intention) { showConfirm('Please choose an intention.'); return; }
   var checked = [];
   document.querySelectorAll('#spellIngredChecks input:checked').forEach(function(cb){checked.push(cb.value)});
   var custom = document.getElementById('spellCustomIngred').value.trim();
@@ -1174,12 +1183,12 @@ function saveSpell() {
   document.getElementById('spellIntention').value = '';
   document.getElementById('spellDate').value = getTodayISO();
   document.getElementById('spellMoon').value = getMoonPhase(getTodayISO());
-  document.getElementById('spellIngredSection').style.display = 'none';
-  document.getElementById('spellIngredChecks').innerHTML = '';
+  document.getElementById('spellIngredSection').style.display = '';
+  document.querySelectorAll('#spellIngredChecks input[type="checkbox"]').forEach(function(cb){cb.checked=false});
   document.getElementById('spellCustomIngred').value = '';
   document.getElementById('spellNotes').value = '';
   document.querySelector('input[name="spellOutcome"][value="pending"]').checked = true;
-  alert('Spell logged successfully!');
+  showConfirm('Spell logged successfully!');
   renderSpellHistory();
 }
 
@@ -1294,6 +1303,64 @@ function renderSpellAnalysis() {
 
 // Init moon phase on load
 document.getElementById('spellMoon').value = getMoonPhase(getTodayISO());
+
+// Visual confirmation toast (replaces alert())
+function showConfirm(msg) {
+  var existing = document.getElementById('spells-toast');
+  if (existing) existing.remove();
+  var t = document.createElement('div');
+  t.id = 'spells-toast';
+  t.innerHTML = '<span>' + msg.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>';
+  t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;background:#7B5EA7;color:#fff;padding:14px 28px;border-radius:8px;font-size:14px;box-shadow:0 8px 32px rgba(123,94,167,.4);opacity:0;transition:all .3s ease;pointer-events:none';
+  document.body.appendChild(t);
+  requestAnimationFrame(function() { t.style.opacity = '1'; });
+  setTimeout(function() { t.style.opacity = '0'; setTimeout(function() { if (t.parentNode) t.remove(); }, 400); }, 2500);
+}
+
+// Export spells as CSV
+function exportSpellsCSV() {
+  var data = getSpells();
+  var spells = data.spells || [];
+  if (!spells.length) { showConfirm('No spells to export.'); return; }
+  var header = 'Intention,Date,Moon Phase,Ingredients,Notes,Outcome,Created At\n';
+  var rows = spells.map(function(s) {
+    var int = '"' + (s.intention||'').replace(/"/g,'""') + '"';
+    var dt = s.date || '';
+    var mp = MOON_PHASE_LABELS[s.moon_phase] || s.moon_phase || '';
+    var ing = (s.ingredients||[]).map(function(i){return '"' + i.replace(/"/g,'""') + '"'}).join(', ');
+    var notes = '"' + ((s.notes||'').replace(/\n/g,' ').replace(/"/g,'""')) + '"';
+    var oc = s.outcome || '';
+    var ca = s.created_at || '';
+    return int + ',' + dt + ',"' + mp + '"' + ',' + ing + ',' + notes + ',' + oc + ',' + ca;
+  });
+  rows.unshift(header);
+  var blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'spell-tracker-export-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function() { URL.revokeObjectURL(url); a.remove(); }, 1000);
+  showConfirm('Spells exported!');
+}
+
+// Auto-populate ingredients when intention selected (keep ingredient section visible always)
+spellSel.addEventListener('change', function() {
+  var cont = document.getElementById('spellIngredChecks');
+  var int = this.value;
+  if (!int || !DB[int]) return;
+  var items = [];
+  var d = DB[int];
+  ['herbs','crystals','incense'].forEach(function(cat) {
+    if (Array.isArray(d[cat])) items = items.concat(d[cat]);
+  });
+  items.sort();
+  cont.innerHTML = items.map(function(item, i) {
+    return '<div class="check-item"><input type="checkbox" id="si-'+i+'" value="'+item+'" checked><label for="si-'+i+'">'+item+'</label></div>';
+  }).join('');
+});
+
 </script>
 
 </body>
@@ -1324,25 +1391,34 @@ fbq('track', 'Purchase', {value: 12.00, currency: 'USD'});
 src="https://www.facebook.com/tr?id=947012561524608&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel Code -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap');
-:root{--cream:#FAF7F2;--gold:#C5A55A;--black:#0A0A0A;--stone:#6B6560;--stone-light:#9B9590}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+:root{--void:#08070E;--deep:#0D0B12;--gold:#C4A265;--purple:#9B7FD4;--silver:#EDEAF4}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;color:#1A1A1A;background:var(--cream);display:flex;align-items:center;justify-content:center;min-height:100vh}
-.container{max-width:520px;text-align:center;padding:24px}
+body{font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;color:#EDEAF4;background:var(--void);display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}
+.container{max-width:520px;padding:24px}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.3;animation:float 8s ease-in-out infinite alternate}
+.orb-1{width:200px;height:200px;background:#7B5EA7;top:20%;left:10%}
+.orb-2{width:150px;height:150px;background:var(--gold);bottom:30%;right:15%;opacity:.15}
+@keyframes float{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-30px) scale(1.1)}}
 .divider{width:48px;height:1px;background:var(--gold);margin:0 auto 32px}
-h1{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;color:var(--black);margin-bottom:16px}
-p{font-size:15px;color:var(--stone);margin-bottom:24px}
-.note{font-size:12px;color:var(--stone-light);margin-top:32px}
+h1{font-family:'Cinzel',serif;font-size:40px;font-weight:600;color:#fff;margin-bottom:12px;letter-spacing:.05em}
+.subtitle{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(237,234,244,.5);margin-bottom:32px;font-style:italic}
+p{font-size:15px;color:#9B93A8;margin-bottom:20px}
+.note{font-size:12px;color:#6B6578;margin-top:32px}
+.note a{color:var(--gold);text-decoration:none}
+.btn-gold{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,var(--gold) 0%,#A8894E 100%);color:#0D0B12;border-radius:8px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;box-shadow:0 4px 20px rgba(196,162,101,.3);transition:all .2s}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(196,162,101,.4)}
 </style></head><body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 <div class="container">
 <div class="divider"></div>
 <h1>You're in.</h1>
-<p>Welcome to the Coven. Redirecting you now…</p>
-<p class="note">Questions? <a href="mailto:support@allmind.biz" style="color:var(--gold)">support@allmind.biz</a></p>
+<p class="subtitle">Your grimoire awaits.</p>
+<a href="/app" class="btn-gold">Open Your Compass</a>
+<p class="note">Questions? <a href="mailto:support@allmind.biz">support@allmind.biz</a></p>
 </div>
-<script>
-setTimeout(function(){ window.location.href = '/app'; }, 8000);
-</script>
+<script>setTimeout(function(){ window.location.href = '/app'; }, 8000);</script>
 </body></html>`;
 
 // ─── Router ───

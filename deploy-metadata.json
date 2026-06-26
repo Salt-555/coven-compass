@@ -8,7 +8,7 @@
   "stripe_product_id": "prod_ULyv51tzBVCCp9",
   "stripe_price_id": "price_1TNGxJIqUlirfBrCoyJLXWpt",
   "stripe_webhook_id": "we_1TNGvmIqUlirfBrCqVbaIKXy",
-  "meta_pixel_id": null,
-  "deployed_at": "2026-05-11",
-  "last_deploy_source_hash": "953dc660dc289aad2fde25cad6dc5e61ef1a1c243e66b13868f88c65b00c9591"
+  "meta_pixel_id": "947012561524608",
+  "deployed_at": "2026-06-26",
+  "last_deploy_source_hash": "29097239f390bc83c91c93b0b662bd8bb5247e1d0a97927de70967a012501048"
 }
