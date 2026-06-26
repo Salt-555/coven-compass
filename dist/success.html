@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to the Coven</title>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '947012561524608');
+fbq('track', 'PageView');
+fbq('track', 'Purchase', {value: 12.00, currency: 'USD'});
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=947012561524608&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel Code -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+:root{--void:#08070E;--deep:#0D0B12;--gold:#C4A265;--purple:#9B7FD4;--silver:#EDEAF4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;color:#EDEAF4;background:var(--void);display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}
+.container{max-width:520px;padding:24px}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.3;animation:float 8s ease-in-out infinite alternate}
+.orb-1{width:200px;height:200px;background:#7B5EA7;top:20%;left:10%}
+.orb-2{width:150px;height:150px;background:var(--gold);bottom:30%;right:15%;opacity:.15}
+@keyframes float{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-30px) scale(1.1)}}
+.divider{width:48px;height:1px;background:var(--gold);margin:0 auto 32px}
+h1{font-family:'Cinzel',serif;font-size:40px;font-weight:600;color:#fff;margin-bottom:12px;letter-spacing:.05em}
+.subtitle{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(237,234,244,.5);margin-bottom:32px;font-style:italic}
+p{font-size:15px;color:#9B93A8;margin-bottom:20px}
+.note{font-size:12px;color:#6B6578;margin-top:32px}
+.note a{color:var(--gold);text-decoration:none}
+.btn-gold{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,var(--gold) 0%,#A8894E 100%);color:#0D0B12;border-radius:8px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;box-shadow:0 4px 20px rgba(196,162,101,.3);transition:all .2s}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(196,162,101,.4)}
+</style></head><body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="container">
+<div class="divider"></div>
+<h1>You're in.</h1>
+<p class="subtitle">Your grimoire awaits.</p>
+<a href="/app" class="btn-gold">Open Your Compass</a>
+<p class="note">Questions? <a href="mailto:support@allmind.biz">support@allmind.biz</a></p>
+</div>
+<script>setTimeout(function(){ window.location.href = '/app'; }, 8000);</script>
+</body></html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coven Compass</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+:root{
+  --void:#08070E;--deep:#0F0E18;--card:#16142A;--card-hover:#1C1938;
+  --border:#252240;--border-light:#332F55;
+  --purple:#9B7FD4;--purple-dim:#7A5FB4;--purple-glow:rgba(155,127,212,.18);
+  --amber:#D4A857;--amber-dim:#A8843A;--amber-glow:rgba(212,168,87,.12);
+  --silver:#C8C3D4;--silver-dim:#8A8498;--muted:#5E5870;
+  --white:#EDEAF4;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Inter',sans-serif;font-weight:300;line-height:1.6;color:var(--silver);background:var(--void)}
+
+/* ── NAV BAR ── */
+.navbar{position:sticky;top:0;z-index:10;background:rgba(8,7,14,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 16px}
+.nav-inner{max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-brand{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:var(--white);letter-spacing:.08em}
+.nav-brand span{color:var(--purple)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:rgba(15,14,24,.6)}
+.tab{flex:1;padding:12px 8px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;background:none;text-align:center;transition:color .2s,background .2s;position:relative}
+.tab:hover{color:var(--silver-dim)}
+.tab.active{color:var(--white)}
+.tab.active::after{content:'';position:absolute;bottom:-1px;left:20%;right:20%;height:2px;background:linear-gradient(90deg,transparent,var(--purple),transparent);border-radius:1px}
+
+/* ── LAYOUT ── */
+.container{max-width:800px;margin:0 auto;padding:24px 16px 80px}
+.panel{display:none}.panel.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LOOKUP TAB ── */
+.lookup-header{text-align:center;padding:32px 0 24px}
+.lookup-header h2{font-family:'Cinzel',serif;font-size:22px;font-weight:600;color:var(--white);margin-bottom:16px;letter-spacing:.04em}
+
+select{width:100%;padding:14px 40px 14px 16px;font-family:'Inter',sans-serif;font-size:14px;font-weight:300;border:1px solid var(--border);background:var(--card);color:var(--silver);border-radius:8px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A5FB4' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;transition:border-color .2s,box-shadow .2s}
+select:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-glow)}
+option{background:var(--card);color:var(--silver)}
+
+/* ── SPELL SHEET ── */
+.sheet{margin-top:24px}
+.sheet-header{text-align:center;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.sheet-header .sub{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+.sheet-header h2{font-family:'Cinzel',serif;font-size:26px;font-weight:600;color:var(--white);text-transform:capitalize;letter-spacing:.03em}
+
+.usage-block{display:flex;gap:14px;padding:18px 20px;margin-bottom:24px;background:linear-gradient(135deg,rgba(155,127,212,.08),rgba(155,127,212,.02));border:1px solid rgba(155,127,212,.15);border-radius:10px;align-items:flex-start}
+.usage-icon{font-size:20px;color:var(--purple);flex-shrink:0;line-height:1.4;margin-top:1px}
+.usage-text{font-size:13px;color:var(--silver-dim);line-height:1.7;font-family:'Cormorant Garamond',serif;font-size:15px}
+
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:24px}
+.cat{padding:16px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;position:relative;overflow:hidden;transition:border-color .2s}
+.cat:hover{border-color:var(--border-light)}
+.cat::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--purple),transparent);opacity:.6}
+.cat-label{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+.cat-items{font-size:13px;color:var(--silver);line-height:1.7}
+
+.btn{display:inline-block;padding:12px 24px;font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dim) 100%);color:var(--white);border:none;cursor:pointer;border-radius:6px;transition:transform .15s,box-shadow .2s;box-shadow:0 4px 16px rgba(155,127,212,.2)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(155,127,212,.3)}
+
+/* ── REVERSE LOOKUP ── */
+input[type="text"]{width:100%;padding:14px 16px;font-family:'Inter',sans-serif;font-size:14px;font-weight:300;border:1px solid var(--border);background:var(--card);color:var(--silver);border-radius:8px;outline:none;transition:border-color .2s,box-shadow .2s}
+input[type="text"]:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-glow)}
+input::placeholder{color:var(--muted)}
+
+.search-result{padding:14px 16px;background:var(--card);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;border-radius:8px;transition:border-color .15s,background .15s}
+.search-result:hover{border-color:var(--purple);background:var(--card-hover)}
+.search-result h3{font-size:14px;margin-bottom:2px;text-transform:capitalize;color:var(--white)}
+.search-result p{font-size:11px;color:var(--silver-dim)}
+
+/* ── SUPPLIES TAB ── */
+p.hint{color:var(--muted);margin-bottom:16px;font-size:13px}
+
+.supply-group{margin-bottom:4px}
+.supply-toggle{font-size:12px;font-weight:500;color:var(--silver);padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;user-select:none;transition:border-color .15s}
+.supply-toggle:hover{border-color:var(--border-light)}
+.supply-toggle::-webkit-details-marker{display:none}
+.supply-toggle::before{content:'▸';font-size:9px;color:var(--purple);transition:transform .2s;display:inline-block;flex-shrink:0}
+details[open]>.supply-toggle::before{transform:rotate(90deg)}
+details[open]>.supply-toggle{border-bottom:none;border-radius:8px 8px 0 0;color:var(--white)}
+.supply-items{padding:8px 16px;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:rgba(22,20,42,.5)}
+
+.check-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(37,34,64,.4)}
+.check-item:last-child{border-bottom:none}
+.check-item input[type="checkbox"]{width:15px;height:15px;accent-color:var(--purple);cursor:pointer;flex-shrink:0}
+.check-item label{font-size:13px;cursor:pointer;text-transform:capitalize;color:var(--silver)}
+
+.match{padding:14px 16px;background:var(--card);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;border-radius:8px;transition:border-color .15s,background .15s}
+.match:hover{border-color:var(--purple);background:var(--card-hover)}
+.match h3{font-size:14px;margin-bottom:6px;text-transform:capitalize;color:var(--white)}
+.match-bar{height:3px;background:rgba(37,34,64,.8);margin-top:6px;border-radius:2px;overflow:hidden}
+.match-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--amber));border-radius:2px;transition:width .3s ease}
+.match-score{font-size:10px;color:var(--purple);margin-top:6px;font-weight:500;letter-spacing:.04em}
+
+/* ── SPELL LOG TABS ── */
+.spell-sub-tab{font-size:9px;padding:8px 14px;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transition:all .2s}
+.spell-sub-tab:hover{color:var(--silver-dim);border-color:var(--border-light)}
+.spell-sub-tab.active{background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dim) 100%);color:var(--white);border-color:transparent;box-shadow:0 2px 12px rgba(155,127,212,.2)}
+
+.spell-panel{display:none}.spell-panel.active{display:block;animation:fadeIn .25s ease}
+
+/* ── SPELL LOG FORM ── */
+.form-section h3{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--white);margin-bottom:20px;letter-spacing:.03em}
+
+.sp-label{display:block;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+textarea{width:100%;padding:14px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:300;border:1px solid var(--border);background:var(--card);color:var(--silver);border-radius:8px;outline:none;resize:vertical;transition:border-color .2s,box-shadow .2s}
+textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-glow)}
+input[type="date"]{width:100%;padding:14px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:300;border:1px solid var(--border);background:var(--card);color:var(--silver);border-radius:8px;outline:none;color-scheme:dark;transition:border-color .2s,box-shadow .2s}
+input[type="date"]:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-glow)}
+
+.spell-ingred-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;padding:8px 0}
+.spell-outcome-group{display:flex;gap:12px;flex-wrap:wrap}
+.spell-outcome-opt{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--silver)}
+.spell-outcome-opt input[type="radio"]{accent-color:var(--purple);width:14px;height:14px;cursor:pointer}
+
+.badge{display:inline-block;padding:2px 8px;font-size:9px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-radius:4px}
+.badge-success{background:rgba(139,192,111,.1);color:#7AB85F}
+.badge-partial{background:var(--amber-glow);color:var(--amber)}
+.badge-fail{background:rgba(192,111,111,.1);color:#C06F6F}
+.badge-pending{background:rgba(94,88,112,.3);color:var(--muted)}
+
+/* ── SPELL HISTORY ── */
+.spell-entry{padding:16px;background:var(--card);border:1px solid var(--border);margin-bottom:8px;border-radius:8px;transition:border-color .15s}
+.spell-entry:hover{border-color:var(--border-light)}
+.spell-entry-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:-4px}
+.spell-entry-header strong{text-transform:capitalize;font-size:14px;color:var(--white);font-weight:500}
+.spell-entry-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.spell-entry-details{display:none;padding-top:14px;margin-top:12px;border-top:1px solid var(--border)}
+.spell-entry-details.open{display:block;animation:fadeIn .2s ease}
+.spell-entry-ingreds{font-size:12px;color:var(--silver-dim);margin-bottom:8px;line-height:1.6}
+.spell-entry-ingreds span{display:inline-block;background:rgba(37,34,64,.5);padding:2px 8px;margin:2px 4px 2px 0;border-radius:4px;color:var(--silver-dim)}
+.spell-entry-notes{font-size:13px;color:var(--silver);white-space:pre-wrap;line-height:1.6}
+
+/* ── ANALYSIS PANEL ── */
+.stat-card{padding:20px;background:var(--card);border:1px solid var(--border);margin-bottom:8px;border-radius:10px;transition:border-color .15s}
+.stat-card:hover{border-color:var(--border-light)}
+.stat-label{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+.stat-value{font-family:'Cinzel',serif;font-size:32px;font-weight:700;color:var(--white);line-height:1.1}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(37,34,64,.4);font-size:13px;color:var(--silver)}
+.stat-row:last-child{border-bottom:none}
+.stat-row-label{text-transform:capitalize}
+
+/* ── PRINT ── */
+@media print{.no-print{display:none!important}body{background:white;color:#333}.print-area{display:block!important}}
+@media(max-width:600px){.cat-grid{grid-template-columns:1fr 1fr;gap:6px}.spell-ingred-grid{grid-template-columns:1fr}.usage-block{flex-direction:column;gap:8px;padding:14px}.stat-value{font-size:26px}}
+</style>
+</head>
+<body>
+
+<!-- NAV BAR -->
+<div class="no-print">
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand"><span>✦</span> Coven Compass</div>
+  </div>
+</nav>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('lookup')">Lookup</button>
+  <button class="tab" onclick="switchTab('reverse')">Reverse</button>
+  <button class="tab" onclick="switchTab('supplies')">Supplies</button>
+  <button class="tab" onclick="switchTab('spells')">Spell Log</button>
+</div>
+</div>
+
+<div class="container">
+
+<!-- LOOKUP PANEL -->
+<div id="p-lookup" class="panel active">
+  <div class="lookup-header">
+    <h2>Find Your Correspondences</h2>
+    <select id="intentionSelect" onchange="showSheet(this.value)">
+      <option value="">Choose an intention...</option>
+    </select>
+  </div>
+  <div id="sheet" class="sheet"></div>
+</div>
+
+<!-- REVERSE LOOKUP PANEL -->
+<div id="p-reverse" class="panel">
+  <input type="text" id="revInput" placeholder="Search herbs, crystals, incense..." oninput="doReverse(this.value)">
+  <div id="revResults"></div>
+</div>
+
+<!-- SUPPLIES PANEL -->
+<div id="p-supplies" class="panel">
+  <input type="text" id="suppliesSearch" placeholder="Filter herbs, crystals..." oninput="filterSupplies(this.value)" style="margin-bottom:16px;width:100%;padding:14px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:300;border:1px solid var(--border);background:var(--card);color:var(--silver);border-radius:8px;outline:none">
+  <p class="hint">Check what you have on hand to find matching intentions.</p>
+  <div id="supplyChecks"></div>
+  <div id="supplyResults" style="margin-top:24px"></div>
+</div>
+
+<!-- SPELL LOG PANEL -->
+<div id="p-spells" class="panel">
+
+  <div style="display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap">
+    <button class="spell-sub-tab active" data-stab="log" onclick="switchSpellTab('log')">Log Spell</button>
+    <button class="spell-sub-tab" data-stab="history" onclick="switchSpellTab('history')">History</button>
+    <button class="spell-sub-tab" data-stab="analysis" onclick="switchSpellTab('analysis')">Analysis</button>
+  </div>
+
+  <!-- LOG FORM -->
+  <div id="stab-log" class="spell-panel active">
+    <div class="form-section">
+      <h3>New Entry</h3>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div><label class="sp-label">Intention</label><select id="spellIntention"><option value="">Choose intention...</option></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div><label class="sp-label">Date Cast</label><input type="date" id="spellDate"></div>
+          <div><label class="sp-label">Moon Phase</label><select id="spellMoon"><option value="new">New Moon</option><option value="waxing_crescent">Waxing Crescent</option><option value="first_quarter">First Quarter</option><option value="waxing_gibbous">Waxing Gibbous</option><option value="full">Full Moon</option><option value="waning_gibbous">Waning Gibbous</option><option value="last_quarter">Last Quarter</option><option value="waning_crescent">Waning Crescent</option></select></div>
+        </div>
+        <div id="spellIngredSection"><label class="sp-label">Ingredients Used</label><div id="spellIngredChecks" class="spell-ingred-grid"></div><input type="text" id="spellCustomIngred" placeholder="Add custom ingredients (comma separated)" style="margin-top:8px"></div>
+        <div><label class="sp-label">Notes</label><textarea id="spellNotes" rows="3" placeholder="What happened? Any signs or synchronicities?"></textarea></div>
+        <div><label class="sp-label">Outcome</label><div id="spellOutcome" class="spell-outcome-group"><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="pending" checked> <span class="badge badge-pending">Pending</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="success"> <span class="badge badge-success">Success</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="partial"> <span class="badge badge-partial">Partial</span></label><label class="spell-outcome-opt"><input type="radio" name="spellOutcome" value="fail"> <span class="badge badge-fail">Fail</span></label></div></div>
+        <div><button class="btn" onclick="saveSpell()">Save Entry</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="stab-history" class="spell-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><h3 style="font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--white);letter-spacing:.03em">Spell History</h3><button class="btn" style="background:rgba(255,255,255,.08);font-size:11px;padding:7px 14px;cursor:pointer;border-radius:6px;color:var(--text)" onclick="exportSpellsCSV()">Export CSV</button></div>
+    <div id="spellHistoryList"></div>
+  </div>
+
+  <!-- ANALYSIS -->
+  <div id="stab-analysis" class="spell-panel">
+    <h3 style="font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--white);margin-bottom:20px;letter-spacing:.03em">Pattern Analysis</h3>
+    <div id="spellAnalysisContent"></div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+var DB = {"protection": {"herbs": ["rosemary", "sage", "bay leaf", "basil", "black pepper", "thyme", "juniper", "rue", "vervet (blue vervain)", "angelica"], "crystals": ["black tourmaline", "obsidian", "hematite", "smoky quartz", "jet", "black onyx"], "candle_color": "Black or White", "day": "Saturday", "moon_phase": "Waning", "element": "Earth", "incense": ["dragon's blood", "frankincense", "copal", "sandalwood"], "deities": ["Hecate", "Artemis", "Ares", "Mars"], "tarot": "The Tower", "direction": "North", "oil": "Protection blend (frankincense + myrrh)"}, "love": {"herbs": ["rose", "lavender", "jasmine", "hibiscus", "damiana", "chamomile", "cinnamon", "cardamom", "vervet (blue vervain)", "apple blossom"], "crystals": ["rose quartz", "rhodonite", "pink tourmaline", "rhodochrosite", "emerald", "garnet"], "candle_color": "Pink or Red", "day": "Friday", "moon_phase": "Waxing", "element": "Water", "incense": ["rose", "jasmine", "ylang ylang", "sandalwood"], "deities": ["Venus", "Aphrodite", "Freya", "Astarte"], "tarot": "The Empress", "direction": "West", "oil": "Love blend (rose + jasmine)"}, "prosperity": {"herbs": ["basil", "cinnamon", "mint", "bay leaf", "chamomile", "alfalfa", "clover", "dill", "patchouli", "vetiver"], "crystals": ["citrine", "pyrite", "green aventurine", "tiger's eye", "jade", "peridot"], "candle_color": "Green or Gold", "day": "Thursday", "moon_phase": "Waxing", "element": "Earth", "incense": ["patchouli", "cinnamon", "basil", "bergamot"], "deities": ["Lakshmi", "Fortuna", "Athena", "Jupiter"], "tarot": "The Wheel of Fortune", "direction": "North", "oil": "Prosperity blend (bergamot + cinnamon)"}, "healing": {"herbs": ["lavender", "chamomile", "eucalyptus", "peppermint", "thyme", "elderflower", "calendula", "comfrey", "aloe", "rosemary"], "crystals": ["amethyst", "clear quartz", "green aventurine", "bloodstone", "malachite", "selenite"], "candle_color": "Blue or Green", "day": "Monday", "moon_phase": "Waxing or Full", "element": "Water", "incense": ["eucalyptus", "lavender", "frankincense", "sandalwood"], "deities": ["Brigid", "Apollo", "Asclepius", "Isis"], "tarot": "The Star", "direction": "West", "oil": "Healing blend (eucalyptus + lavender)"}, "banishing": {"herbs": ["black pepper", "cayenne", "garlic", "rue", "wormwood", "devil's shoe string", "agrimony", "hydrangea", "black cohosh", "buckeye"], "crystals": ["obsidian", "black tourmaline", "smoky quartz", "apache tear", "jet", "garnet"], "candle_color": "Black", "day": "Saturday", "moon_phase": "Waning or Dark", "element": "Fire", "incense": ["dragon's blood", "myrrh", "copal", "vetiver"], "deities": ["Hecate", "Kali", "The Morrigan", "Saturn"], "tarot": "Death", "direction": "South", "oil": "Banishing blend (myrrh + black pepper)"}, "purification": {"herbs": ["sage", "lavender", "rosemary", "cedar", "juniper", "sweetgrass", "hyssop", "lemon balm", "eucalyptus", "pine"], "crystals": ["selenite", "clear quartz", "howlite", "angelite", "celestite", "moonstone"], "candle_color": "White", "day": "Monday", "moon_phase": "Waning", "element": "Air", "incense": ["sage", "copal", "frankincense", "palo santo"], "deities": ["Brigid", "Artemis", "Vesta", "Apollo"], "tarot": "Judgement", "direction": "East", "oil": "Purification blend (lemon + sage)"}, "divination": {"herbs": ["mugwort", "yarrow", "bay leaf", "star anise", "wormwood", "thyme", "hazel", "honeysuckle", "lavender", "marigold"], "crystals": ["amethyst", "moonstone", "labradorite", "lapis lazuli", "azurite", "clear quartz"], "candle_color": "Purple or Silver", "day": "Monday", "moon_phase": "Full or Dark", "element": "Air", "incense": ["mugwort", "sandalwood", "jasmine", "acacia"], "deities": ["Hecate", "Thoth", "Apollo", "Athena"], "tarot": "The High Priestess", "direction": "East", "oil": "Psychic blend (mugwort + lavender)"}, "courage": {"herbs": ["thyme", "basil", "bay leaf", "borage", "caraway", "cayenne", "cinnamon", "dragon's blood", "ginger", "peony"], "crystals": ["carnelian", "tiger's eye", "bloodstone", "red jasper", "garnet", "sunstone"], "candle_color": "Red or Orange", "day": "Tuesday", "moon_phase": "Waxing", "element": "Fire", "incense": ["dragon's blood", "ginger", "cinnamon", "frankincense"], "deities": ["Mars", "Ares", "Brigid", "Sekhmet"], "tarot": "Strength", "direction": "South", "oil": "Courage blend (ginger + cinnamon)"}, "wisdom": {"herbs": ["sage", "bay leaf", "mugwort", "sandalwood", "acacia", "bodhi", "cedar", "ginseng", "hazel", "olive"], "crystals": ["lapis lazuli", "sodalite", "amethyst", "fluorite", "azurite", "iolite"], "candle_color": "Blue or Purple", "day": "Wednesday", "moon_phase": "Full", "element": "Air", "incense": ["sandalwood", "cedar", "frankincense", "lotus"], "deities": ["Athena", "Thoth", "Odin", "Saraswati"], "tarot": "The Hierophant", "direction": "East", "oil": "Wisdom blend (cedar + frankincense)"}, "peace": {"herbs": ["lavender", "chamomile", "lemon balm", "passionflower", "rose", "valerian", "lily of the valley", "violet", "mallow", "hops"], "crystals": ["blue lace agate", "angelite", "howlite", "lepidolite", "rose quartz", "moonstone"], "candle_color": "Blue or White", "day": "Monday", "moon_phase": "Waning", "element": "Water", "incense": ["lavender", "chamomile", "sandalwood", "lotus"], "deities": ["Quan Yin", "Aphrodite", "Bast", "Venus"], "tarot": "Temperance", "direction": "West", "oil": "Peace blend (lavender + chamomile)"}, "success": {"herbs": ["bay leaf", "basil", "bergamot", "cinnamon", "ginger", "orange peel", "patchouli", "sandalwood", "sunflower", "vetiver"], "crystals": ["citrine", "tiger's eye", "pyrite", "sunstone", "carnelian", "golden topaz"], "candle_color": "Gold or Orange", "day": "Sunday", "moon_phase": "Waxing", "element": "Fire", "incense": ["bergamot", "cinnamon", "orange", "frankincense"], "deities": ["Apollo", "Helios", "Ra", "Lugh"], "tarot": "The Sun", "direction": "South", "oil": "Success blend (bergamot + orange)"}, "fertility": {"herbs": ["vervet (blue vervain)", "basil", "cinnamon", "damiana", "fig", "hawthorn", "jasmine", "mandrake", "mint", "pomegranate"], "crystals": ["moonstone", "rose quartz", "carnelian", "jade", "green aventurine", "unakite"], "candle_color": "Green or Pink", "day": "Friday", "moon_phase": "Waxing or Full", "element": "Earth", "incense": ["jasmine", "rose", "sandalwood", "ylang ylang"], "deities": ["Aphrodite", "Freya", "Isis", "Demeter"], "tarot": "The Empress", "direction": "North", "oil": "Fertility blend (jasmine + cinnamon)"}, "psychic_ability": {"herbs": ["mugwort", "lavender", "acacia", "belladonna (external only - toxic)", "hazel", "hellebore (toxic)", "hemp (legal jurisdictions)", "honey", "lotus", "wormwood"], "crystals": ["amethyst", "moonstone", "labradorite", "lapis lazuli", "moldavite", "charoite"], "candle_color": "Purple or Silver", "day": "Monday", "moon_phase": "Full or Dark", "element": "Spirit", "incense": ["mugwort", "acacia", "jasmine", "lotus"], "deities": ["Hecate", "Thoth", "Isis", "Selene"], "tarot": "The Moon", "direction": "Center", "oil": "Psychic blend (mugwort + acacia)"}, "communication": {"herbs": ["lavender", "lemongrass", "peppermint", "butterfly pea", "chamomile", "elderflower", "honey", "lemon verbena", "slippery elm", "valerian"], "crystals": ["blue lace agate", "aquamarine", "sodalite", "turquoise", "chrysocolla", "angelite"], "candle_color": "Yellow or Blue", "day": "Wednesday", "moon_phase": "Waxing", "element": "Air", "incense": ["lavender", "lemongrass", "frankincense", "sage"], "deities": ["Mercury", "Hermes", "Thoth", "Saraswati"], "tarot": "The Magician", "direction": "East", "oil": "Communication blend (lemongrass + lavender)"}, "wealth": {"herbs": ["alfalfa", "bay leaf", "bergamot", "cinnamon", "clover", "dill", "five finger grass", "moss", "patchouli", "pine"], "crystals": ["pyrite", "citrine", "green jade", "malachite", "emerald", "green tourmaline"], "candle_color": "Green or Gold", "day": "Thursday", "moon_phase": "Waxing", "element": "Earth", "incense": ["patchouli", "cinnamon", "pine", "bergamot"], "deities": ["Lakshmi", "Fortuna", "Jupiter", "Plutus"], "tarot": "The Wheel of Fortune", "direction": "North", "oil": "Wealth blend (patchouli + cinnamon)"}, "grounding": {"herbs": ["vetiver", "patchouli", "cedar", "oak moss", "sandalwood", "pine", "myrrh", "cypress", "frankincense", "benzoin"], "crystals": ["black tourmaline", "hematite", "smoky quartz", "red jasper", "obsidian", "garnet"], "candle_color": "Brown or Black", "day": "Saturday", "moon_phase": "Dark or New", "element": "Earth", "incense": ["vetiver", "patchouli", "cedar", "myrrh"], "deities": ["Gaia", "Cernunnos", "Pan", "Saturn"], "tarot": "The World", "direction": "North", "oil": "Grounding blend (vetiver + cedar)"}, "dreamwork": {"herbs": ["mugwort", "lavender", "chamomile", "valerian", "hops", "passionflower", "jasmine", "rose", "honeysuckle", "bay leaf"], "crystals": ["amethyst", "moonstone", "labradorite", "lapis lazuli", "howlite", "scolecite"], "candle_color": "Purple or Silver", "day": "Monday", "moon_phase": "Full or Dark", "element": "Water", "incense": ["mugwort", "jasmine", "sandalwood", "chamomile"], "deities": ["Selene", "Morpheus", "Hecate", "Isis"], "tarot": "The Moon", "direction": "West", "oil": "Dream blend (mugwort + lavender)"}, "new_beginnings": {"herbs": ["basil", "bay leaf", "bergamot", "borage", "clover", "daffodil", "elderflower", "fern", "lemon balm", "mint"], "crystals": ["moonstone", "clear quartz", "labradorite", "amazonite", "aventurine", "sunstone"], "candle_color": "White or Green", "day": "Sunday or Monday", "moon_phase": "New Moon", "element": "Air", "incense": ["bergamot", "frankincense", "lemon", "sage"], "deities": ["Brigid", "Apollo", "Artemis", "Janus"], "tarot": "The Fool", "direction": "East", "oil": "New beginnings blend (bergamot + lemon)"}, "self_love": {"herbs": ["rose", "lavender", "jasmine", "vanilla", "chamomile", "ylang ylang", "damiana", "hawthorn", "rosemary", "cardamom"], "crystals": ["rose quartz", "rhodonite", "pink tourmaline", "moonstone", "lepidolite", "rhodochrosite"], "candle_color": "Pink", "day": "Friday", "moon_phase": "Waxing or Full", "element": "Water", "incense": ["rose", "vanilla", "jasmine", "sandalwood"], "deities": ["Aphrodite", "Venus", "Hathor", "Quan Yin"], "tarot": "The Empress", "direction": "West", "oil": "Self-love blend (rose + vanilla)"}, "clarity": {"herbs": ["peppermint", "rosemary", "lemongrass", "sage", "bay leaf", "cedar", "eucalyptus", "frankincense", "lavender", "acacia"], "crystals": ["clear quartz", "fluorite", "sodalite", "calcite", "iolite", "diamond"], "candle_color": "White or Yellow", "day": "Wednesday", "moon_phase": "New or Waxing", "element": "Air", "incense": ["frankincense", "peppermint", "sage", "cedar"], "deities": ["Athena", "Apollo", "Thoth", "Mercury"], "tarot": "The Magician", "direction": "East", "oil": "Clarity blend (peppermint + rosemary)"}, "release": {"herbs": ["black pepper", "cayenne", "dragon's blood", "hyssop", "patchouli", "pine", "rue", "sage", "slippery elm", "vetiver"], "crystals": ["obsidian", "smoky quartz", "black tourmaline", "apache tear", "tektite", "hematite"], "candle_color": "Black or Dark Blue", "day": "Saturday", "moon_phase": "Waning or Dark", "element": "Water", "incense": ["myrrh", "dragon's blood", "copal", "vetiver"], "deities": ["Hecate", "Kali", "The Morrigan", "Cerridwen"], "tarot": "Death", "direction": "West", "oil": "Release blend (myrrh + black pepper)"}, "abundance": {"herbs": ["alfalfa", "basil", "bay leaf", "buckwheat", "cinnamon", "clover", "dill", "five finger grass", "mint", "patchouli"], "crystals": ["citrine", "green aventurine", "jade", "peridot", "green tourmaline", "malachite"], "candle_color": "Green or Gold", "day": "Thursday", "moon_phase": "Waxing", "element": "Earth", "incense": ["patchouli", "cinnamon", "basil", "orange"], "deities": ["Lakshmi", "Ceres", "Fortuna", "Jupiter"], "tarot": "Nine of Pentacles", "direction": "North", "oil": "Abundance blend (cinnamon + orange)"}, "intuition": {"herbs": ["mugwort", "acacia", "anise", "bay leaf", "celadine (external only)", "elderflower", "jasmine", "lotus", "moonwort", "poppy"], "crystals": ["amethyst", "moonstone", "labradorite", "lapis lazuli", "sodalite", "iolite"], "candle_color": "Purple or Silver", "day": "Monday", "moon_phase": "Full or Dark", "element": "Water", "incense": ["mugwort", "jasmine", "lotus", "acacia"], "deities": ["Hecate", "Selene", "Isis", "Athena"], "tarot": "The High Priestess", "direction": "West", "oil": "Intuition blend (jasmine + mugwort)"}, "transformation": {"herbs": ["dragon's blood", "fern", "flax", "galangal", "high john the conqueror", "mandrake (toxic)", "patchouli", "sandalwood", "wormwood", "bittersweet (toxic)"], "crystals": ["labradorite", "obsidian", "malachite", "moldavite", "tektite", "transformation quartz"], "candle_color": "Purple or Black", "day": "Tuesday or Saturday", "moon_phase": "Dark or New", "element": "Fire", "incense": ["dragon's blood", "myrrh", "frankincense", "sandalwood"], "deities": ["Kali", "Hecate", "Phoenix", "Shiva"], "tarot": "Death", "direction": "South", "oil": "Transformation blend (dragon's blood + frankincense)"}, "friendship": {"herbs": ["rose", "lavender", "chamomile", "catnip", "daisy", "elderflower", "lady's mantle", "lemon balm", "lovage", "sweet pea"], "crystals": ["rose quartz", "green aventurine", "rhodonite", "pink tourmaline", "lepidolite", "moonstone"], "candle_color": "Pink or Yellow", "day": "Friday", "moon_phase": "Waxing", "element": "Air", "incense": ["rose", "lavender", "chamomile", "ylang ylang"], "deities": ["Venus", "Aphrodite", "Freya", "Hathor"], "tarot": "Three of Cups", "direction": "East", "oil": "Friendship blend (lavender + lemon)"}, "justice": {"herbs": ["vervet (blue vervain)", "chamomile", "clove", "dragon's blood", "fern", "flax", "galangal", "horehound", "rue", "wormwood"], "crystals": ["lapis lazuli", "sodalite", "sapphire", "azurite", "fluorite", "labradorite"], "candle_color": "Blue or Purple", "day": "Thursday or Saturday", "moon_phase": "Waxing or Full", "element": "Air", "incense": ["frankincense", "copal", "dragon's blood", "sandalwood"], "deities": ["Athena", "Ma'at", "Themis", "Jupiter"], "tarot": "Justice", "direction": "East", "oil": "Justice blend (frankincense + dragon's blood)"}, "travel_safety": {"herbs": ["bay leaf", "caraway", "chamomile", "clover", "hazel", "lavender", "mallow", "marjoram", "mint", "rosemary"], "crystals": ["turquoise", "malachite", "aquamarine", "labradorite", "tiger's eye", "hematite"], "candle_color": "Blue or Yellow", "day": "Wednesday", "moon_phase": "Any", "element": "Air", "incense": ["lavender", "chamomile", "frankincense", "sandalwood"], "deities": ["Hermes", "Mercury", "Apollo", "Thor"], "tarot": "The Chariot", "direction": "East", "oil": "Travel blend (lavender + chamomile)"}, "sleep": {"herbs": ["lavender", "chamomile", "valerian", "hops", "passionflower", "lemon balm", "jasmine", "mugwort", "lily of the valley", "vervet (blue vervain)"], "crystals": ["amethyst", "moonstone", "lepidolite", "howlite", "selenite", "blue lace agate"], "candle_color": "Blue or Purple", "day": "Monday", "moon_phase": "Waning or Dark", "element": "Water", "incense": ["lavender", "chamomile", "jasmine", "sandalwood"], "deities": ["Selene", "Morpheus", "Nyx", "Hypnos"], "tarot": "The Moon", "direction": "West", "oil": "Sleep blend (lavender + chamomile)"}, "strength": {"herbs": ["borage", "caraway", "cayenne", "cinnamon", "dragon's blood", "ginger", "high john the conqueror", "patchouli", "peony", "thyme"], "crystals": ["tiger's eye", "carnelian", "bloodstone", "red jasper", "garnet", "ruby"], "candle_color": "Red or Orange", "day": "Tuesday", "moon_phase": "Waxing or Full", "element": "Fire", "incense": ["dragon's blood", "ginger", "cinnamon", "frankincense"], "deities": ["Mars", "Ares", "Sekhmet", "Hercules"], "tarot": "Strength", "direction": "South", "oil": "Strength blend (ginger + cinnamon)"}, "creativity": {"herbs": ["bay leaf", "bergamot", "borage", "cinnamon", "lemon balm", "lemongrass", "orange peel", "peppermint", "rosemary", "saffron"], "crystals": ["carnelian", "citrine", "sunstone", "orange calcite", "fire opal", "amber"], "candle_color": "Orange or Yellow", "day": "Wednesday or Sunday", "moon_phase": "Waxing", "element": "Fire", "incense": ["bergamot", "orange", "frankincense", "cinnamon"], "deities": ["Apollo", "Brigid", "Athena", "Saraswati"], "tarot": "The Star", "direction": "South", "oil": "Creativity blend (bergamot + orange)"}};
+
+// Build reverse index
+var revIdx = {};
+Object.keys(DB).forEach(function(int) {
+  var d = DB[int];
+  Object.keys(d).forEach(function(cat) {
+    var val = d[cat];
+    if (Array.isArray(val)) {
+      val.forEach(function(item) {
+        var k = item.toLowerCase().trim();
+        if (!revIdx[k]) revIdx[k] = [];
+        if (!revIdx[k].some(function(r){return r.i === int})) {
+          revIdx[k].push({i: int, c: cat});
+        }
+      });
+    }
+  });
+});
+var catDefs = [
+  {k:'herbs', l:'Herbs'},
+  {k:'crystals', l:'Crystals'},
+  {k:'candle_color', l:'Candle Color'},
+  {k:'day', l:'Best Day'},
+  {k:'moon_phase', l:'Moon Phase'},
+  {k:'element', l:'Element'},
+  {k:'incense', l:'Incense'},
+  {k:'deities', l:'Deities'},
+  {k:'tarot', l:'Tarot Card'},
+  {k:'oil', l:'Anointing Oil'}
+];
+
+// Populate dropdown
+var sel = document.getElementById('intentionSelect');
+Object.keys(DB).sort().forEach(function(key) {
+  var opt = document.createElement('option');
+  opt.value = key;
+  opt.textContent = key.replace(/_/g, ' ');
+  sel.appendChild(opt);
+});
+
+// Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelector('[onclick="switchTab(\\'' + name + '\\')"]').classList.add('active');
+  document.getElementById('p-' + name).classList.add('active');
+}
+
+// Intention lookup
+function showSheet(intention) {
+  var el = document.getElementById('sheet');
+  if (!intention) { el.innerHTML = ''; return; }
+  var d = DB[intention];
+  if (!d) { el.innerHTML = ''; return; }
+
+  var html = '<div class="sheet-header"><div class="sub">Spell Correspondences</div><h2>' + intention.replace(/_/g,' ') + '</h2></div>';
+  if (d.usage) {
+    html += '<div class="usage-block"><div class="usage-icon">&#9817;</div><div class="usage-text">' + d.usage + '</div></div>';
+  }
+  html += '<div class="cat-grid">';
+  catDefs.forEach(function(c) {
+    var val = d[c.k];
+    if (!val) return;
+    var display = Array.isArray(val) ? val.join(', ') : val;
+    html += '<div class="cat"><div class="cat-label">' + c.l + '</div><div class="cat-items">' + display + '</div></div>';
+  });
+  html += '</div><div style="text-align:center;margin-top:8px"><button class="btn" onclick="printSheet(\\'' + intention + '\\')">Print Sheet</button></div>';
+  el.innerHTML = html;
+}
+
+// Reverse lookup
+function doReverse(q) {
+  var el = document.getElementById('revResults');
+  if (q.length < 2) { el.innerHTML = ''; return; }
+  var ql = q.toLowerCase();
+  var matches = Object.keys(revIdx).filter(function(k){return k.indexOf(ql) >= 0}).sort();
+  if (!matches.length) { el.innerHTML = '<p style="color:var(--muted);padding:16px 0">No matches found.</p>'; return; }
+  el.innerHTML = matches.map(function(item) {
+    var ints = revIdx[item];
+    return '<div class="search-result" onclick="switchTab(\\'lookup\\');document.getElementById(\\'intentionSelect\\').value=\\'' + ints[0].i + '\\';showSheet(\\'' + ints[0].i + '\\')"><h3>' + item + '</h3><p>Used for: ' + ints.map(function(r){return r.i.replace(/_/g,' ')}).join(', ') + '</p></div>';
+  }).join('');
+}
+
+// Supplies mode
+var allSupplyItems = [];
+var supplyCategories = {herbs:[], crystals:[]};
+
+function buildSupplies() {
+  var herbs = [];
+  var crystals = [];
+  Object.keys(revIdx).forEach(function(item) {
+    var isHerb = Object.keys(DB).some(function(int) {
+      return DB[int].herbs && DB[int].herbs.map(function(h){return h.toLowerCase()}).indexOf(item) >= 0;
+    });
+    if (isHerb) herbs.push(item);
+    else crystals.push(item);
+  });
+  herbs.sort(); crystals.sort();
+  allSupplyItems = [...herbs, ...crystals];
+  supplyCategories = {herbs: herbs, crystals: crystals};
+
+  function renderSection(label, items) {
+    var html = '<details class="supply-group">';
+    html += '<summary class="supply-toggle">' + label + ' <span style="color:var(--muted);font-weight:300;font-size:11px">(' + items.length + ')</span></summary>';
+    html += '<div class="supply-items">';
+    items.forEach(function(item) {
+      html += '<div class="check-item" data-supply-name="' + item.toLowerCase() + '"><input type="checkbox" id="s-' + item + '" data-item="' + item + '" onchange="calcMatches()"><label for="s-' + item + '">' + item + '</label></div>';
+    });
+    html += '</div></details>';
+    return html;
+  }
+
+  var html = renderSection('Herbs', herbs);
+  html += renderSection('Crystals', crystals);
+  document.getElementById('supplyChecks').innerHTML = html;
+}
+
+
+function filterSupplies(q) {
+  q = q.toLowerCase().trim();
+  if (!q) { buildSupplies(); return; }
+  var filteredHerbs = supplyCategories.herbs.filter(function(h){return h.toLowerCase().indexOf(q) >= 0});
+  var filteredCrystals = supplyCategories.crystals.filter(function(c){return c.toLowerCase().indexOf(q) >= 0});
+
+  function renderSection(label, items) {
+    if (!items.length) return '';
+    var html = '<details class="supply-group" open>';
+    html += '<summary class="supply-toggle">' + label + ' <span style="color:var(--muted);font-weight:300;font-size:11px">(' + items.length + ')</span></summary>';
+    html += '<div class="supply-items">';
+    items.forEach(function(item) {
+      var matchClass = item.toLowerCase().indexOf(q) >= 0 ? '' : '';
+      html += '<div class="check-item"><input type="checkbox" id="s-' + item + '" data-item="' + item + '" onchange="calcMatches()"><label for="s-' + item + '">' + item + '</label></div>';
+    });
+    html += '</div></details>';
+    return html;
+  }
+
+  var html = renderSection('Herbs', filteredHerbs);
+  html += renderSection('Crystals', filteredCrystals);
+  document.getElementById('supplyChecks').innerHTML = html || '<p style="padding:20px;color:var(--muted)">No matches found.</p>';
+}
+
+
+function calcMatches() {
+  var checked = [];
+  document.querySelectorAll('#supplyChecks input:checked').forEach(function(cb){checked.push(cb.dataset.item)});
+  var el = document.getElementById('supplyResults');
+  if (!checked.length) { el.innerHTML = ''; return; }
+  var scores = {};
+  Object.keys(DB).forEach(function(int) {
+    var score = 0;
+    checked.forEach(function(item) {
+      Object.values(DB[int]).forEach(function(val) {
+        if (Array.isArray(val) && val.map(function(v){return v.toLowerCase()}).indexOf(item) >= 0) score++;
+      });
+    });
+    if (score > 0) scores[int] = score;
+  });
+  var sorted = Object.keys(scores).sort(function(a,b){return scores[b]-scores[a]});
+  var max = sorted.length ? scores[sorted[0]] : 1;
+  el.innerHTML = '<p style="font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--purple);margin-bottom:12px">Best Matches</p>' +
+    sorted.map(function(int) {
+      return '<div class="match" onclick="switchTab(\\'lookup\\');document.getElementById(\\'intentionSelect\\').value=\\''+int+'\\';showSheet(\\''+int+'\\')"><h3>'+int.replace(/_/g,' ')+'</h3><div class="match-bar"><div class="match-fill" style="width:'+(scores[int]/max*100)+'%"></div></div><div class="match-score">'+scores[int]+' items match</div></div>';
+    }).join('');
+}
+
+// Print
+function printSheet(intention) {
+  var d = DB[intention]; if (!d) return;
+  var today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  var html = '<div style="background:white;padding:48px;max-width:640px;margin:0 auto;font-family:Inter,sans-serif">';
+  html += '<h1 style="font-family:Cormorant Garamond,serif;font-size:36px;text-align:center;margin-bottom:8px;text-transform:capitalize">'+intention.replace(/_/g,' ')+'</h1>';
+  html += '<p style="text-align:center;font-size:12px;color:#9B9590;margin-bottom:40px">'+today+'</p>';
+  catDefs.forEach(function(c) {
+    var val = d[c.k]; if (!val) return;
+    var display = Array.isArray(val) ? val.join(' . ') : val;
+    html += '<div style="border-bottom:1px solid #F0EBE3;padding:12px 0"><div style="font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#C5A55A;margin-bottom:4px">'+c.l+'</div><div style="font-size:14px">'+display+'</div></div>';
+  });
+  html += '<div style="margin-top:24px;padding-top:16px;border-top:1px solid #F0EBE3"><div style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#9B9590;margin-bottom:8px">Ritual Notes</div>';
+  for (var i=0;i<6;i++) html += '<div style="border-bottom:1px solid #F0EBE3;height:28px;margin-bottom:4px"></div>';
+  html += '</div><p style="text-align:center;margin-top:24px;font-size:11px;color:#9B9590">Coven Compass</p></div>';
+  var win = window.open('','_blank');
+  win.document.write('<html><body style="margin:0">'+html+'</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print()},500);
+}
+
+// Init
+buildSupplies();
+
+// ===== SPELL LOG =====
+var SPELL_KEY = 'coven_spells';
+
+function getSpells() {
+  try { return JSON.parse(localStorage.getItem(SPELL_KEY) || '{"spells":[]}'); }
+  catch(e) { return {spells:[]}; }
+}
+function saveSpellsData(data) { localStorage.setItem(SPELL_KEY, JSON.stringify(data)); }
+
+// Moon phase calculation using known new moon reference (Jan 6, 2000) + synodic month
+var MOON_PHASE_NAMES = ['new','waxing_crescent','first_quarter','waxing_gibbous','full','waning_gibbous','last_quarter','waning_crescent'];
+var MOON_PHASE_LABELS = {new:'New Moon',waxing_crescent:'Waxing Crescent',first_quarter:'First Quarter',waxing_gibbous:'Waxing Gibbous',full:'Full Moon',waning_gibbous:'Waning Gibbous',last_quarter:'Last Quarter',waning_crescent:'Waning Crescent'};
+var KNOWN_NEW_MOON = new Date(2000, 0, 6, 18, 14, 0).getTime(); // Jan 6 2000 18:14 UTC
+var SYNODIC_MS = 29.53058770576 * 86400000;
+
+function getMoonPhase(dateStr) {
+  var d = new Date(dateStr + 'T12:00:00');
+  var diff = d.getTime() - KNOWN_NEW_MOON;
+  var phase = ((diff % SYNODIC_MS) + SYNODIC_MS) % SYNODIC_MS;
+  var day = phase / SYNODIC_MS;
+  var idx = Math.floor(day * 8) % 8;
+  return MOON_PHASE_NAMES[idx];
+}
+
+function getTodayISO() {
+  var d = new Date();
+  var m = ('0' + (d.getMonth()+1)).slice(-2);
+  var day = ('0' + d.getDate()).slice(-2);
+  return d.getFullYear() + '-' + m + '-' + day;
+}
+
+// Populate spell intention dropdown
+var spellSel = document.getElementById('spellIntention');
+Object.keys(DB).sort().forEach(function(key) {
+  var opt = document.createElement('option');
+  opt.value = key;
+  opt.textContent = key.replace(/_/g, ' ');
+  spellSel.appendChild(opt);
+});
+
+// Set default date to today
+document.getElementById('spellDate').value = getTodayISO();
+
+// Auto-calculate moon phase on date change
+document.getElementById('spellDate').addEventListener('change', function() {
+  if (this.value) document.getElementById('spellMoon').value = getMoonPhase(this.value);
+});
+
+// Sub-tab switching
+function switchSpellTab(name) {
+  document.querySelectorAll('.spell-sub-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.spell-panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelector('[data-stab="'+name+'"]').classList.add('active');
+  document.getElementById('stab-'+name).classList.add('active');
+  if (name === 'history') renderSpellHistory();
+  if (name === 'analysis') renderSpellAnalysis();
+}
+
+// Save a spell
+function saveSpell() {
+  var intention = document.getElementById('spellIntention').value;
+  if (!intention) { showConfirm('Please choose an intention.'); return; }
+  var checked = [];
+  document.querySelectorAll('#spellIngredChecks input:checked').forEach(function(cb){checked.push(cb.value)});
+  var custom = document.getElementById('spellCustomIngred').value.trim();
+  if (custom) {
+    custom.split(',').forEach(function(s){var t=s.trim();if(t)checked.push(t)});
+  }
+  var outcome = document.querySelector('input[name="spellOutcome"]:checked').value;
+  var data = getSpells();
+  data.spells.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    intention: intention,
+    date: document.getElementById('spellDate').value,
+    moon_phase: document.getElementById('spellMoon').value,
+    ingredients: checked,
+    notes: document.getElementById('spellNotes').value.trim(),
+    outcome: outcome,
+    created_at: new Date().toISOString()
+  });
+  saveSpellsData(data);
+  // Reset form
+  document.getElementById('spellIntention').value = '';
+  document.getElementById('spellDate').value = getTodayISO();
+  document.getElementById('spellMoon').value = getMoonPhase(getTodayISO());
+  document.getElementById('spellIngredSection').style.display = '';
+  document.querySelectorAll('#spellIngredChecks input[type="checkbox"]').forEach(function(cb){cb.checked=false});
+  document.getElementById('spellCustomIngred').value = '';
+  document.getElementById('spellNotes').value = '';
+  document.querySelector('input[name="spellOutcome"][value="pending"]').checked = true;
+  showConfirm('Spell logged successfully!');
+  renderSpellHistory();
+}
+
+function deleteSpell(id) {
+  if (!confirm('Delete this spell entry?')) return;
+  var data = getSpells();
+  data.spells = data.spells.filter(function(s){return s.id !== id});
+  saveSpellsData(data);
+  renderSpellHistory();
+  renderSpellAnalysis();
+}
+
+function toggleSpellDetails(id) {
+  var el = document.getElementById('sd-' + id);
+  if (el) el.classList.toggle('open');
+}
+
+function renderSpellHistory() {
+  var el = document.getElementById('spellHistoryList');
+  var data = getSpells();
+  var spells = data.spells.slice().sort(function(a,b){return b.date.localeCompare(a.date) || b.created_at.localeCompare(a.created_at)});
+  if (!spells.length) { el.innerHTML = '<p style="color:var(--muted);padding:16px 0">No spells logged yet. Log your first spell above!</p>'; return; }
+  el.innerHTML = spells.map(function(s) {
+    var badgeClass = 'badge-' + s.outcome;
+    var dateStr = s.date ? new Date(s.date+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : 'No date';
+    var ingreds = s.ingredients && s.ingredients.length ? s.ingredients.map(function(i){return '<span>'+i+'</span>'}).join('') : '<em style="color:var(--muted)">None recorded</em>';
+    return '<div class="spell-entry"><div class="spell-entry-header" onclick="toggleSpellDetails(\\''+s.id+'\\')"><div><strong style="text-transform:capitalize">'+s.intention.replace(/_/g,' ')+'</strong><div class="spell-entry-meta">'+dateStr+' · '+(MOON_PHASE_LABELS[s.moon_phase]||s.moon_phase)+'</div></div><div style="display:flex;align-items:center;gap:12px"><span class="badge '+badgeClass+'">'+s.outcome+'</span><span style="color:var(--muted);font-size:12px">▼</span></div></div><div id="sd-'+s.id+'" class="spell-entry-details"><div class="spell-entry-ingreds">'+ingreds+'</div>'+(s.notes?'<div class="spell-entry-notes">'+s.notes.replace(/</g,'&lt;').replace(/\\n/g,'<br>')+'</div>':'<em style="color:var(--muted);font-size:13px">No notes</em>')+'<div style="margin-top:12px;text-align:right"><button class="btn" style="background:var(--silver-dim);font-size:10px;padding:6px 14px" onclick="deleteSpell(\\''+s.id+'\\')">Delete</button></div></div></div>';
+  }).join('');
+}
+
+function renderSpellAnalysis() {
+  var el = document.getElementById('spellAnalysisContent');
+  var data = getSpells();
+  var spells = data.spells;
+  if (!spells.length) { el.innerHTML = '<p style="color:var(--muted);padding:16px 0">No data to analyze yet. Log some spells first!</p>'; return; }
+
+  var total = spells.length;
+  var concluded = spells.filter(function(s){return s.outcome !== 'pending'});
+  var successCount = spells.filter(function(s){return s.outcome === 'success'}).length;
+  var successRate = concluded.length ? Math.round(successCount / concluded.length * 100) : 0;
+
+  // By moon phase
+  var phaseStats = {};  spells.forEach(function(s) {
+    if (s.outcome === 'pending') return;
+    var p = s.moon_phase || 'unknown';
+    if (!phaseStats[p]) phaseStats[p] = {total:0,success:0};
+    phaseStats[p].total++;
+    if (s.outcome === 'success') phaseStats[p].success++;
+  });
+
+  // By intention
+  var intStats = {};
+  spells.forEach(function(s) {
+    if (s.outcome === 'pending') return;
+    var int = s.intention;
+    if (!intStats[int]) intStats[int] = {total:0,success:0};
+    intStats[int].total++;
+    if (s.outcome === 'success') intStats[int].success++;
+  });
+
+  // Most common intentions
+  var intCounts = {};
+  spells.forEach(function(s) {
+    intCounts[s.intention] = (intCounts[s.intention]||0)+1;
+  });
+  var sortedInts = Object.keys(intCounts).sort(function(a,b){return intCounts[b]-intCounts[a]});
+
+  var html = '<div class="stat-card"><div class="stat-label">Total Spells Cast</div><div class="stat-value">'+total+'</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">Overall Success Rate</div><div class="stat-value">'+successRate+'%</div><div class="stat-sub">'+successCount+' of '+concluded.length+' concluded spells</div></div>';
+
+  // Best moon phase
+  var phaseEntries = Object.keys(phaseStats).map(function(p){
+    var pct = phaseStats[p].total > 0 ? Math.round(phaseStats[p].success / phaseStats[p].total * 100) : 0;
+    return {phase:p,pct:pct,total:phaseStats[p].total,success:phaseStats[p].success};
+  }).sort(function(a,b){return b.pct - a.pct || b.total - a.total});
+
+  html += '<div class="stat-card"><div class="stat-label">Success by Moon Phase</div>';
+  if (phaseEntries.length) {
+    phaseEntries.forEach(function(pe) {
+      html += '<div class="stat-row"><span class="stat-row-label">'+(MOON_PHASE_LABELS[pe.phase]||pe.phase)+'</span><span>'+pe.pct+'% ('+pe.success+'/'+pe.total+')</span></div>';
+    });
+  } else {
+    html += '<p style="font-size:13px;color:var(--silver-dim)">No concluded spells yet</p>';
+  }
+  html += '</div>';
+
+  // By intention
+  var intEntries = Object.keys(intStats).map(function(int){
+    var pct = intStats[int].total > 0 ? Math.round(intStats[int].success / intStats[int].total * 100) : 0;
+    return {int:int,pct:pct,total:intStats[int].total,success:intStats[int].success};
+  }).sort(function(a,b){return b.pct - a.pct || b.total - a.total});
+
+  html += '<div class="stat-card"><div class="stat-label">Success by Intention</div>';
+  if (intEntries.length) {
+    intEntries.forEach(function(ie) {
+      html += '<div class="stat-row"><span class="stat-row-label">'+ie.int.replace(/_/g,' ')+'</span><span>'+ie.pct+'% ('+ie.success+'/'+ie.total+')</span></div>';
+    });
+  } else {
+    html += '<p style="font-size:13px;color:var(--silver-dim)">No concluded spells yet</p>';
+  }
+  html += '</div>';
+
+  // Most common intentions
+  html += '<div class="stat-card"><div class="stat-label">Most Common Intentions</div>';
+  sortedInts.slice(0,5).forEach(function(int) {
+    html += '<div class="stat-row"><span class="stat-row-label">'+int.replace(/_/g,' ')+'</span><span>'+intCounts[int]+' spell'+(intCounts[int]>1?'s':'')+'</span></div>';
+  });
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+// Init moon phase on load
+document.getElementById('spellMoon').value = getMoonPhase(getTodayISO());
+
+// Visual confirmation toast (replaces alert())
+function showConfirm(msg) {
+  var existing = document.getElementById('spells-toast');
+  if (existing) existing.remove();
+  var t = document.createElement('div');
+  t.id = 'spells-toast';
+  t.innerHTML = '<span>' + msg.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>';
+  t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;background:#7B5EA7;color:#fff;padding:14px 28px;border-radius:8px;font-size:14px;box-shadow:0 8px 32px rgba(123,94,167,.4);opacity:0;transition:all .3s ease;pointer-events:none';
+  document.body.appendChild(t);
+  requestAnimationFrame(function() { t.style.opacity = '1'; });
+  setTimeout(function() { t.style.opacity = '0'; setTimeout(function() { if (t.parentNode) t.remove(); }, 400); }, 2500);
+}
+
+// Export spells as CSV
+function exportSpellsCSV() {
+  var data = getSpells();
+  var spells = data.spells || [];
+  if (!spells.length) { showConfirm('No spells to export.'); return; }
+  var header = 'Intention,Date,Moon Phase,Ingredients,Notes,Outcome,Created At\n';
+  var rows = spells.map(function(s) {
+    var int = '"' + (s.intention||'').replace(/"/g,'""') + '"';
+    var dt = s.date || '';
+    var mp = MOON_PHASE_LABELS[s.moon_phase] || s.moon_phase || '';
+    var ing = (s.ingredients||[]).map(function(i){return '"' + i.replace(/"/g,'""') + '"'}).join(', ');
+    var notes = '"' + ((s.notes||'').replace(/\n/g,' ').replace(/"/g,'""')) + '"';
+    var oc = s.outcome || '';
+    var ca = s.created_at || '';
+    return int + ',' + dt + ',"' + mp + '"' + ',' + ing + ',' + notes + ',' + oc + ',' + ca;
+  });
+  rows.unshift(header);
+  var blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'spell-tracker-export-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function() { URL.revokeObjectURL(url); a.remove(); }, 1000);
+  showConfirm('Spells exported!');
+}
+
+// Auto-populate ingredients when intention selected (keep ingredient section visible always)
+spellSel.addEventListener('change', function() {
+  var cont = document.getElementById('spellIngredChecks');
+  var int = this.value;
+  if (!int || !DB[int]) return;
+  var items = [];
+  var d = DB[int];
+  ['herbs','crystals','incense'].forEach(function(cat) {
+    if (Array.isArray(d[cat])) items = items.concat(d[cat]);
+  });
+  items.sort();
+  cont.innerHTML = items.map(function(item, i) {
+    return '<div class="check-item"><input type="checkbox" id="si-'+i+'" value="'+item+'" checked><label for="si-'+i+'">'+item+'</label></div>';
+  }).join('');
+});
+
+</script>
+
+</body>
+</html>
