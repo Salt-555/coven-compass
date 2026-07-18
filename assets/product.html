@@ -666,9 +666,11 @@ function renderSpellAnalysis() {
 function showConfirm(msg) {
   var overlay = document.createElement('div');
   overlay.className = 'confirm-overlay';
-  overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
   overlay.innerHTML = '<div class="confirm-box"><p>' + msg + '</p><button class="btn" onclick="this.parentElement.parentElement.remove()">Continue</button></div>';
   document.body.appendChild(overlay);
+  setTimeout(function() {
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+  }, 50);
 }
 
 // Save offline copy
