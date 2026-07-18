@@ -677,15 +677,41 @@ function showConfirm(msg) {
 function saveOffline() {
   var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
   var blob = new Blob([html], {type: 'text/html'});
+  var fileName = 'coven-compass.html';
+
+  // Try Web Share API first (works well on iOS Safari)
+  if (navigator.share && navigator.canShare) {
+    var file = new File([blob], fileName, {type: 'text/html'});
+    if (navigator.canShare({files: [file]})) {
+      navigator.share({files: [file], title: 'Coven Compass'}).then(function() {
+        showConfirm('Saved! Find it in your Files app.');
+      }).catch(function() {
+        // User cancelled or share failed — fall through to download
+        fallbackDownload(blob, fileName);
+      });
+      return;
+    }
+  }
+  fallbackDownload(blob, fileName);
+}
+
+function fallbackDownload(blob, fileName) {
   var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'coven-compass.html';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  showConfirm('Saved! Open the file anytime — no internet needed.');
-  setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS) {
+    // iOS Safari: open in new tab so user can share/save from there
+    window.open(url, '_blank');
+    showConfirm('Opened in new tab. Use the Share button to save to Files.');
+  } else {
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showConfirm('Saved! Open the file anytime — no internet needed.');
+  }
+  setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
 }
 
 // Init moon phase on load
