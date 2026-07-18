@@ -35,6 +35,8 @@ body{font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;color:var(--
 .nav-inner{max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
 .nav-brand{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:var(--text);letter-spacing:.08em}
 .nav-brand .glyph{color:var(--gold);text-shadow:0 0 12px var(--gold-glow);margin-right:6px;font-size:16px}
+.nav-save{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:none;border:1px solid rgba(227,199,143,.25);border-radius:8px;padding:6px 14px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.nav-save:hover{border-color:rgba(227,199,143,.5);box-shadow:0 0 16px rgba(227,199,143,.15)}
 
 /* ── TABS ── */
 .tabs{display:flex;gap:0;border-bottom:1px solid var(--card-border);background:rgba(20,16,38,.6);position:relative;z-index:10}
@@ -189,6 +191,7 @@ input[type="date"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--p
 <nav class="navbar">
   <div class="nav-inner">
     <div class="nav-brand"><span class="glyph">&#9790;</span> Coven Compass</div>
+    <button class="nav-save" onclick="saveOffline()">Save Offline</button>
   </div>
 </nav>
 <div class="tabs">
@@ -666,6 +669,19 @@ function showConfirm(msg) {
   overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
   overlay.innerHTML = '<div class="confirm-box"><p>' + msg + '</p><button class="btn" onclick="this.parentElement.parentElement.remove()">Continue</button></div>';
   document.body.appendChild(overlay);
+}
+
+// Save offline copy
+function saveOffline() {
+  var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  var blob = new Blob([html], {type: 'text/html'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'coven-compass.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  showConfirm('Saved! Open the file anytime — no internet needed.');
 }
 
 // Init moon phase on load
