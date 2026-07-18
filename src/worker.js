@@ -81,7 +81,7 @@ async function handleSuccess(request, env) {
     }
   }
 
-  const downloadUrl = email ? `/download?email=${encodeURIComponent(email)}` : '#';
+  const downloadUrl = '/app';
   const html = SUCCESS_PAGE_HTML
     .replace(/\{\{DOWNLOAD_URL\}\}/g, downloadUrl)
     .replace(/\{\{CUSTOMER_EMAIL\}\}/g, email);
@@ -166,16 +166,18 @@ async function sendDownloadEmail(env, email) {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${env.RESEND_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: '{{PRODUCT_NAME}} <noreply@yourdomain.com>',
+      from: 'Coven Compass <noreply@allmind.biz>',
       to: [email],
-      subject: 'Your download is ready',
-      html: `<div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;padding:40px 24px">
-        <h1 style="font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:16px">You're in.</h1>
-        <p style="color:#6B6560;font-size:15px;line-height:1.7;margin-bottom:24px">Thanks for your purchase. Your download is ready.</p>
-        <a href="${appUrl}" style="display:inline-block;padding:14px 32px;background:#0A0A0A;color:#FAF7F2;text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase">Open App</a>
-        <p style="color:#9B9590;font-size:13px;margin-top:24px">Bookmark this link: ${appUrl}</p>
-        <hr style="border:none;border-top:1px solid #F0EBE3;margin:32px 0">
-        <p style="color:#9B9590;font-size:12px">Works on any device with a browser.<br>Questions? support@yourdomain.com</p>
+      subject: 'Coven Compass — Your App Access',
+      html: `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;padding:40px 24px;background:#0D0A1A;color:#EFEAF6;border-radius:16px">
+        <h1 style="font-family:Georgia,serif;color:#E3C78F;text-align:center;font-size:28px;margin-bottom:8px">Coven Compass</h1>
+        <p style="text-align:center;color:#A79FC4;font-style:italic;margin-bottom:32px">Your entire practice. One price. Forever.</p>
+        <div style="text-align:center;margin:32px 0">
+          <a href="${appUrl}" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#8B6FC0,#4A2D6B);color:#fff;text-decoration:none;border-radius:10px;font-size:14px;letter-spacing:2px">OPEN YOUR APP</a>
+        </div>
+        <p style="color:#A79FC4;font-size:14px;line-height:1.7">Bookmark this link — it's your permanent access to every correspondence and the spell tracker. Works on any device with a browser.</p>
+        <p style="color:#A79FC4;font-size:14px;line-height:1.7;margin-top:16px">Direct link: <a href="${appUrl}" style="color:#B79BE0">${appUrl}</a></p>
+        <p style="color:#7E7699;font-size:12px;text-align:center;margin-top:32px">No subscription. No account. Yours forever.<br>Questions? support@allmind.biz</p>
       </div>`,
     }),
   });
@@ -1460,7 +1462,7 @@ const SUCCESS_PAGE_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Download Ready</title>
+<title>Welcome to Coven Compass</title>
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -1471,12 +1473,12 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '{{META_PIXEL_ID}}');
+fbq('init', '947012561524608');
 fbq('track', 'PageView');
-fbq('track', 'Purchase', {value: {{PRODUCT_PRICE}}, currency: 'USD'});
+fbq('track', 'Purchase', {value: 12.00, currency: 'USD'});
 </script>
 <noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id={{META_PIXEL_ID}}&ev=PageView&noscript=1"/></noscript>
+src="https://www.facebook.com/tr?id=947012561524608&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel Code -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap');
@@ -1496,15 +1498,15 @@ p{font-size:15px;color:var(--stone);margin-bottom:24px}
 </style></head><body>
 <div class="container">
 <div class="divider"></div>
-<h1>You're in.</h1>
-<p>Your download is ready. A copy has also been sent to your email.</p>
-<a id="downloadBtn" href="{{DOWNLOAD_URL}}" class="download-btn">Download Package</a>
+<h1>Welcome to the Coven.</h1>
+<p>Your app is ready. Bookmark this link — it's yours forever.</p>
+<a id="downloadBtn" href="{{DOWNLOAD_URL}}" class="download-btn">Open Coven Compass</a>
 <div id="manualEntry" class="manual-entry" style="display:none">
 <p>Something went wrong. Enter your purchase email:</p>
 <input type="email" id="emailInput" placeholder="you@example.com">
 <button onclick="window.location.href='/download?email='+encodeURIComponent(document.getElementById('emailInput').value)">Go</button>
 </div>
-<p class="note">Questions? <a href="mailto:support@yourdomain.com" style="color:var(--gold)">support@yourdomain.com</a></p>
+<p class="note">Questions? <a href="mailto:support@allmind.biz" style="color:var(--gold)">support@allmind.biz</a></p>
 </div>
 <script>
 if('{{DOWNLOAD_URL}}'=='#'){
