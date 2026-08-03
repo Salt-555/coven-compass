@@ -236,7 +236,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     .demo-cat{background:var(--ink2);border:1px solid var(--card-border);border-radius:10px;padding:14px 16px}
     .demo-cat-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
     .demo-cat-val{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--text);font-weight:500}
-    .demo-cta-msg{font-size:13px;color:var(--muted);font-style:italic;margin-top:18px;text-align:center;font-family:'Cormorant Garamond',serif}
+    .demo-cta-msg{font-size:14px;color:#DDD5EC;font-style:italic;margin-top:18px;text-align:center;font-family:'Cormorant Garamond',serif;text-shadow:0 1px 2px rgba(13,10,26,.95),0 0 16px rgba(13,10,26,.8)}
 
     /* HERO */
     .hero{text-align:center;padding:70px 0 10px}
@@ -357,7 +357,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     .hero .moon-glyph{margin:0 0 12px;font-size:32px}
     .hero .hero-label{margin-bottom:20px;font-size:11px;letter-spacing:.32em}
     .hero h1{font-size:clamp(42px,5.2vw,70px);line-height:.99;letter-spacing:-.035em;max-width:640px;margin-bottom:24px;text-wrap:balance}
-    .hero .subhead{font-size:24px;line-height:1.42;max-width:590px;margin:0 0 30px;color:#cbc3da;font-style:normal}
+    .hero .subhead{font-size:24px;line-height:1.42;max-width:590px;margin:0 0 30px;color:#cbc3da;font-style:normal;text-shadow:0 1px 2px rgba(13,10,26,.85),0 0 16px rgba(13,10,26,.55)}
     .hero .subhead strong{color:var(--paper);font-weight:500}
     .cta-btn{border-radius:999px;padding:18px 28px;background:linear-gradient(135deg,#8b6fc0,#513271);box-shadow:0 12px 35px rgba(89,57,140,.38),inset 0 1px 0 rgba(255,255,255,.22)}
     .hero .cta-note{font-size:14px;margin-top:16px;color:#c9c1d7}
@@ -369,7 +369,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     .pain,.solution,.compare,.proof,.faq,.cta{padding:108px 0}
     .pain{background:linear-gradient(180deg,rgba(13,10,26,.05),rgba(30,20,52,.30));border-top:1px solid rgba(227,199,143,.12)}
     .section-label{text-align:left;margin-bottom:19px;color:var(--gold);font-size:10px}
-    .section-title{font-family:'Cinzel',serif;font-size:clamp(28px,3vw,43px);line-height:1.1;letter-spacing:-.025em;color:var(--ink-bright);max-width:760px;margin:0 0 42px}
+    .section-title{font-family:'Cinzel',serif;font-size:clamp(28px,3vw,43px);line-height:1.1;letter-spacing:-.025em;color:var(--ink-bright);max-width:760px;margin:0 0 42px;text-shadow:0 1px 2px rgba(13,10,26,.8),0 0 18px rgba(13,10,26,.45)}
     .pain-grid{grid-template-columns:repeat(3,1fr);gap:14px}
     .pain-card{min-height:235px;padding:28px;background:rgba(26,20,46,.65);border-color:rgba(227,199,143,.16);transition:transform .2s ease,border-color .2s ease}
     .pain-card:hover{transform:translateY(-4px);border-color:rgba(227,199,143,.44)}
@@ -511,7 +511,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <p class="subhead">A living ritual reference for <strong>herbs, crystals, candle colors, days, moon phases, elements, and incense</strong> — plus a private spell log for noticing your own patterns over time. $12 once. Yours permanently.</p>
       <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:12.00,currency:'USD'})">Get Coven Compass — $12</a>
       <p class="cta-note"><strong>No subscription.</strong> No monthly fees. No account required. Yours permanently.</p>
-      <p class="trust-line">&#128274; Secure checkout via <strong>Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong>, no questions asked</p>
+      <p class="trust-line">&#128274; <strong>Trusted payment, secured by Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong></p>
     </div>
   </section>
   </main>
@@ -637,7 +637,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <h2>Your next ritual, fully planned<br>in seconds. Every one, tracked.</h2>
       <p>Less than half the cost of one month of a subscription app. Yours forever.</p>
       <a href="https://buy.stripe.com/eVq9AT27O3Ae17xgIB8g007" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:12.00,currency:'USD'})">Get Coven Compass — $12</a>
-      <p class="trust-line">&#128274; Secure checkout via <strong>Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong>, no questions asked</p>
+      <p class="trust-line">&#128274; <strong>Trusted payment, secured by Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong></p>
     </div>
   </section>
 
@@ -678,13 +678,13 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       ' col+=vec3(.29,.18,.42)*neb*.5;',        // purple-deep
       ' col+=vec3(.42,.34,.62)*neb2*.3;',        // softer violet
       // the moon — a soft glowing disc, upper area, drifts with pointer
-      ' vec2 moonPos=vec2(.62+uPtr.x*.04,.78+uPtr.y*.03);',
+      ' vec2 moonPos=vec2(.66+uPtr.x*.02,.72+uPtr.y*.02);',
       ' float md=length((uv-moonPos)*vec2(uRes.x/uRes.y,1.));',
-      ' float moon=smoothstep(.16,.10,md);',
-      ' float glow=exp(-md*md*22.);',
-      ' col+=vec3(.89,.78,.56)*moon*.9;',        // gold disc
-      ' col+=vec3(.89,.78,.56)*glow*.55;',       // gold halo
-      ' col+=vec3(.55,.45,.75)*glow*.25;',       // violet halo edge
+      ' float moon=smoothstep(.13,.08,md);',
+      ' float glow=exp(-md*md*30.);',
+      ' col+=vec3(.89,.78,.56)*moon*.45;',        // gold disc — dimmed for text legibility
+      ' col+=vec3(.89,.78,.56)*glow*.28;',       // gold halo — dimmed
+      ' col+=vec3(.55,.45,.75)*glow*.16;',       // violet halo edge
       // twinkling stars
       ' vec2 sp=p*40.;',
       ' float star=h(floor(sp));',
@@ -695,7 +695,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       ' col+=vec3(.5,.3,.38)*exp(-pow((uv.y-.05)*4.,2.))*.18;',
       ' gl_FragColor=vec4(col,1.);',
       '}'
-    ].join('\\n');
+    ].join('\n');
 
     function sh(t,s){var x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw 0;return x;}
     var prog=gl.createProgram();
