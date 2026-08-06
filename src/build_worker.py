@@ -77,9 +77,43 @@ const APP_HTML = `{app_html}`;
     with open(out_path, 'w') as f:
         f.write(final)
 
-    size = len(worker)
+    # 8. ANTI-REGRESSION: splice project-owned fixed blocks over template defaults.
+    #    The shared stripe-worker.js template ships BROKEN placeholders in the
+    #    success page and email sender ({{PRODUCT_NAME}}, noreply@yourdomain.com).
+    #    These files are the verified-good versions — every rebuild restores them.
+    #    Never edit the shared template for one product; keep fixes here.
+    with open(out_path, 'r') as f:
+        final = f.read()
+
+    # 8a. Replace the SUCCESS_PAGE_HTML template literal with our fixed page.
+    success_html = read('success-page.html')
+    success_lit = js_string_literal(success_html)
+    import re as _re
+    final = _re.sub(
+        r'const SUCCESS_PAGE_HTML = `.*?`;',
+        'const SUCCESS_PAGE_HTML = `' + success_lit + '`;',
+        final,
+        count=1,
+        flags=_re.DOTALL,
+    )
+
+    # 8b. Replace the sendDownloadEmail function body (branded sender, real domain).
+    email_fn = read('send-email.js')
+    final = _re.sub(
+        r'async function sendDownloadEmail\(env, email\) \{.*?\n\}',
+        email_fn.rstrip('\n'),
+        final,
+        count=1,
+        flags=_re.DOTALL,
+    )
+
+    with open(out_path, 'w') as f:
+        f.write(final)
+
+    size = len(final)
     print(f"Wrote {out_path} ({size} bytes)")
     print(f"ZIP_DATA: {len(zip_b64)} chars base64")
+    print("Anti-regression: success page + email sender restored from project-owned files")
     return out_path
 
 if __name__ == '__main__':

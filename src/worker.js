@@ -147,22 +147,23 @@ async function handleDownload(request, env) {
 async function sendDownloadEmail(env, email) {
   if (!env.RESEND_KEY) { console.log('[email] RESEND_KEY not set, skipping'); return; }
 
-  const appUrl = `${env.BASE_URL}/app`;
+  const base = (env.BASE_URL || 'https://coven-compass.allmind.biz').replace(/\/$/, '');
+  const appUrl = `${base}/app`;
 
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${env.RESEND_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: '{{PRODUCT_NAME}} <noreply@yourdomain.com>',
+      from: 'Coven Compass <noreply@allmind.biz>',
       to: [email],
-      subject: 'Your download is ready',
+      subject: 'Your Coven Compass app is ready',
       html: `<div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;padding:40px 24px">
         <h1 style="font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:16px">You're in.</h1>
-        <p style="color:#6B6560;font-size:15px;line-height:1.7;margin-bottom:24px">Thanks for your purchase. Your download is ready.</p>
-        <a href="${appUrl}" style="display:inline-block;padding:14px 32px;background:#0A0A0A;color:#FAF7F2;text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase">Open App</a>
+        <p style="color:#6B6560;font-size:15px;line-height:1.7;margin-bottom:24px">Thanks for your purchase. Your Coven Compass app is ready — open it on any device with a browser.</p>
+        <a href="${appUrl}" style="display:inline-block;padding:14px 32px;background:#0A0A0A;color:#FAF7F2;text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase">Open Your App</a>
         <p style="color:#9B9590;font-size:13px;margin-top:24px">Bookmark this link: ${appUrl}</p>
         <hr style="border:none;border-top:1px solid #F0EBE3;margin:32px 0">
-        <p style="color:#9B9590;font-size:12px">Works on any device with a browser.<br>Questions? support@yourdomain.com</p>
+        <p style="color:#9B9590;font-size:12px">Works on any device with a browser.<br>Questions? support@allmind.biz</p>
       </div>`,
     }),
   });
@@ -695,7 +696,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       ' col+=vec3(.5,.3,.38)*exp(-pow((uv.y-.05)*4.,2.))*.18;',
       ' gl_FragColor=vec4(col,1.);',
       '}'
-    ].join('\n');
+    ].join('\\n');
 
     function sh(t,s){var x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw 0;return x;}
     var prog=gl.createProgram();
@@ -1607,7 +1608,7 @@ const SUCCESS_PAGE_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Download Ready</title>
+<title>Coven Compass — You're in</title>
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -1637,29 +1638,16 @@ p{font-size:15px;color:var(--stone);margin-bottom:24px}
 .download-btn{display:inline-block;padding:14px 32px;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;background:var(--black);color:var(--cream);text-decoration:none;border-radius:2px;transition:background .3s}
 .download-btn:hover{background:#2D2D2D}
 .note{font-size:12px;color:var(--stone-light);margin-top:32px}
-.manual-entry{margin-top:24px}
-.manual-entry input{padding:10px 16px;font-size:14px;border:1px solid #ddd;border-radius:2px;width:280px;max-width:100%;font-family:'Inter',sans-serif}
-.manual-entry button{padding:10px 20px;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:var(--black);border:none;border-radius:2px;cursor:pointer;margin-left:8px}
 </style></head><body>
 <div class="container">
 <div class="divider"></div>
 <h1>You're in.</h1>
-<p>Your download is ready. A copy has also been sent to your email.</p>
-<a id="downloadBtn" href="{{DOWNLOAD_URL}}" class="download-btn">Download Package</a>
-<div id="manualEntry" class="manual-entry" style="display:none">
-<p>Something went wrong. Enter your purchase email:</p>
-<input type="email" id="emailInput" placeholder="you@example.com">
-<button onclick="window.location.href='/download?email='+encodeURIComponent(document.getElementById('emailInput').value)">Go</button>
-</div>
-<p class="note">Questions? <a href="mailto:support@allmind.biz">support@allmind.biz</a></p>
+<p>Your Coven Compass app is ready. It opens on any device with a browser — no account, no download needed.</p>
+<a id="appBtn" href="/app" class="download-btn">Open Your App</a>
+<p class="note">Bookmark the app link — it's yours forever.<br>Questions? <a href="mailto:support@allmind.biz">support@allmind.biz</a></p>
 </div>
 <script>
-if('{{DOWNLOAD_URL}}'=='#'){
-  document.getElementById('downloadBtn').style.display='none';
-  document.getElementById('manualEntry').style.display='block';
-} else {
-  setTimeout(function(){ window.location.href = '{{DOWNLOAD_URL}}'; }, 1500);
-}
+if(document.getElementById('appBtn')){ document.getElementById('appBtn').style.display='inline-block'; }
 </script>
 </body></html>`;
 
