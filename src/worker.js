@@ -182,6 +182,27 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coven Compass — Every Spell Ingredient + Tracker</title>
   <meta name="description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. $17 one-time. No subscription.">
+  <link rel="canonical" href="https://coven-compass.allmind.biz/">
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="Coven Compass — Every Spell Ingredient + Tracker">
+  <meta property="og:description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. One-time purchase.">
+  <meta property="og:url" content="https://coven-compass.allmind.biz/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Coven Compass",
+    "description": "Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. One-time purchase.",
+    "brand": { "@type": "Brand", "name": "ALLMIND" },
+    "offers": {
+      "@type": "Offer",
+      "price": "17.00",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "url": "https://buy.stripe.com/14A28r8wc3Ae3fF4ZT8g00g"
+    }
+  }
+  </script>
   <!-- Meta Pixel Code -->
   <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','947012561524608');fbq('track','PageView');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
