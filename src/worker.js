@@ -1,9 +1,8 @@
-// DEPRECATED: legacy proxy-mode worker template. New full-mode workers are assembled by scripts/assemble_landing.py (no-proxy, direct Stripe). Kept for legacy products referencing env.PAYMENTS.
 /**
  * ALLMIND MVP — Storefront Worker (Simplified)
  * =============================================
  * Payment Link → Success → Download. No custom checkout.
- * Proxy handles Stripe. This worker handles delivery.
+ * Direct Stripe (STRIPE_SECRET_KEY). This worker handles delivery.
  *
  * SETUP:
  *   1. Create a Stripe Payment Link (see deploy steps in SKILL.md)
@@ -11,10 +10,9 @@
  *   3. Register webhook pointing to: {BASE_URL}/webhook
  *
  * BINDINGS (set by deploy script):
- *   PAYMENTS           — Service Binding → payment-proxy
- *   PAYMENT_HMAC_SECRET — Secret for proxy auth
- *   BASE_URL           — Plain text, this worker's URL
- *   RESEND_KEY         — Secret, for transactional emails
+ *   STRIPE_SECRET_KEY — Secret, direct Stripe API access
+ *   BASE_URL          — Plain text, this worker's URL
+ *   RESEND_KEY        — Secret, for transactional emails
  *
  * ROUTES:
  *   GET  /         — Landing page (links to Payment Link)
@@ -24,27 +22,6 @@
  *   GET  /privacy  — Privacy policy
  *   GET  /terms    — Terms of service
  */
-
-// ─── Payment Proxy Client ───
-async function signPayload(body, secret) {
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function callProxy(env, route, payload) {
-  const body = JSON.stringify(payload);
-  const signature = await signPayload(body, env.PAYMENT_HMAC_SECRET);
-  const resp = await env.PAYMENTS.fetch(new Request(`https://proxy${route}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Proxy-Signature': signature },
-    body,
-  }));
-  const data = await resp.json();
-  if (!resp.ok || !data.success) throw new Error(data.error || `Proxy error ${resp.status}`);
-  return data.data;
-}
 
 // ─── Security Headers ───
 const securityHeaders = {
@@ -66,6 +43,43 @@ function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 }
 
+// ─── Direct Stripe helper (no proxy — STRIPE_SECRET_KEY is bound) ───
+async function stripeFetch(env, method, path, params = {}) {
+  const url = `https://api.stripe.com/v1/${path}`;
+  const opts = { method, headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } };
+  if (method !== 'GET') {
+    opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    opts.body = new URLSearchParams(params).toString();
+  }
+  const resp = await fetch(url, opts);
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.error?.message || `Stripe ${resp.status}`);
+  return data;
+}
+
+// ─── Apple Pay domain verification (Stripe express checkout requirement) ───
+// Served at /.well-known/apple-developer-merchantid-domain-association so Apple Pay
+// appears as a one-tap wallet in the embedded checkout. Content from Stripe's
+// canonical file; registered domain: coven-compass.allmind.biz (apwc_1U5Sz4IqUlirfBrCznrwMwRo).
+const APPLE_PAY_VERIFICATION_FILE = '7B227073704964223A2239373943394538343346343131343044463144313834343232393232313734313034353044314339464446394437384337313531303944334643463542433731222C2276657273696F6E223A312C22637265617465644F6E223A313731353230333737303832312C227369676E6174757265223A223330383030363039326138363438383666373064303130373032613038303330383030323031303133313064333030623036303936303836343830313635303330343032303133303830303630393261383634383836663730643031303730313030303061303830333038323033653333303832303338386130303330323031303230323038313636333463386230653330353731373330306130363038326138363438636533643034303330323330376133313265333032633036303335353034303330633235343137303730366336353230343137303730366336393633363137343639366636653230343936653734363536373732363137343639366636653230343334313230326432303437333333313236333032343036303335353034306230633164343137303730366336353230343336353732373436393636363936333631373436393666366532303431373537343638366637323639373437393331313333303131303630333535303430613063306134313730373036633635323034393665363332653331306233303039303630333535303430363133303235353533333031653137306433323334333033343332333933313337333433373332333735613137306433323339333033343332333833313337333433373332333635613330356633313235333032333036303335353034303330633163363536333633326437333664373032643632373236663662363537323264373336393637366535663535343333343264353035323466343433313134333031323036303335353034306230633062363934663533323035333739373337343635366437333331313333303131303630333535303430613063306134313730373036633635323034393665363332653331306233303039303630333535303430363133303235353533333035393330313330363037326138363438636533643032303130363038326138363438636533643033303130373033343230303034633231353737656465626436633762323231386636386464373039306131323138646337623062643666326332383364383436303935643934616634613534313162383334323065643831316633343037653833333331663163353463336637656233323230643662616435643465666634393238393839336537633066313361333832303231313330383230323064333030633036303335353164313330313031666630343032333030303330316630363033353531643233303431383330313638303134323366323439633434663933653465663237653663346636323836633366613262626664326534623330343530363038326230363031303530353037303130313034333933303337333033353036303832623036303130353035303733303031383632393638373437343730336132663266366636333733373032653631373037303663363532653633366636643266366636333733373033303334326436313730373036633635363136393633363133333330333233303832303131643036303335353164323030343832303131343330383230313130333038323031306330363039326138363438383666373633363430353031333038316665333038316333303630383262303630313035303530373032303233303831623630633831623335323635366336393631366536333635323036663665323037343638363937333230363336353732373436393636363936333631373436353230363237393230363136653739323037303631373237343739323036313733373337353664363537333230363136333633363537303734363136653633363532303666363632303734363836353230373436383635366532303631373037303663363936333631363236633635323037333734363136653634363137323634323037343635373236643733323036313665363432303633366636653634363937343639366636653733323036663636323037353733363532633230363336353732373436393636363936333631373436353230373036663663363936333739323036313665363432303633363537323734363936363639363336313734363936663665323037303732363136333734363936333635323037333734363137343635366436353665373437333265333033363036303832623036303130353035303730323031313632613638373437343730336132663266373737373737326536313730373036633635326536333666366432663633363537323734363936363639363336313734363536313735373436383666373236393734373932663330333430363033353531643166303432643330326233303239613032376130323538363233363837343734373033613266326636333732366332653631373037303663363532653633366636643266363137303730366336353631363936333631333332653633373236633330316430363033353531643065303431363034313439343537646236666435373438313836383938393736326637653537383530376537396235383234333030653036303335353164306630313031666630343034303330323037383033303066303630393261383634383836663736333634303631643034303230353030333030613036303832613836343863653364303430333032303334393030333034363032323130306336663032336362323631346262333033383838613136323938336531613933663130353666353066613738636462396261346361323431636331346532356530323231303062653363643064666431363234376636343934343735333830653964343463323238613130383930613361316463373234623862346362383838393831386263333038323032656533303832303237356130303330323031303230323038343936643266626633613938646139373330306130363038326138363438636533643034303330323330363733313162333031393036303335353034303330633132343137303730366336353230353236663666373432303433343132303264323034373333333132363330323430363033353530343062306331643431373037303663363532303433363537323734363936363639363336313734363936663665323034313735373436383666373236393734373933313133333031313036303335353034306130633061343137303730366336353230343936653633326533313062333030393036303335353034303631333032353535333330316531373064333133343330333533303336333233333334333633333330356131373064333233393330333533303336333233333334333633333330356133303761333132653330326330363033353530343033306332353431373037303663363532303431373037303663363936333631373436393666366532303439366537343635363737323631373436393666366532303433343132303264323034373333333132363330323430363033353530343062306331643431373037303663363532303433363537323734363936363639363336313734363936663665323034313735373436383666373236393734373933313133333031313036303335353034306130633061343137303730366336353230343936653633326533313062333030393036303335353034303631333032353535333330353933303133303630373261383634386365336430323031303630383261383634386365336430333031303730333432303030346630313731313834313964373634383564353161356532353831303737366538383061326566646537626165346465303864666334623933653133333536643536363562333561653232643039373736306432323465376262613038666437363137636538386362373662623636373062656338653832393834666635343435613338316637333038316634333034363036303832623036303130353035303730313031303433613330333833303336303630383262303630313035303530373330303138363261363837343734373033613266326636663633373337303265363137303730366336353265363336663664326636663633373337303330333432643631373037303663363537323666366637343633363136373333333031643036303335353164306530343136303431343233663234396334346639336534656632376536633466363238366333666132626266643265346233303066303630333535316431333031303166663034303533303033303130316666333031663036303335353164323330343138333031363830313462626230646561313538333338383961613438613939646562656264656261666461636232346162333033373036303335353164316630343330333032653330326361303261613032383836323636383734373437303361326632663633373236633265363137303730366336353265363336663664326636313730373036633635373236663666373436333631363733333265363337323663333030653036303335353164306630313031666630343034303330323031303633303130303630613261383634383836663736333634303630323065303430323035303033303061303630383261383634386365336430343033303230333637303033303634303233303361636637323833353131363939623138366662333563333536636136326266663431376564643930663735346461323865626566313963383135653432623738396638393866373962353939663938643534313064386639646539633266653032333033323264643534343231623061333035373736633564663333383362393036376664313737633263323136643936346663363732363938323132366635346638376137643162393963623962303938393231363130363939306630393932316430303030333138323031383833303832303138343032303130313330383138363330376133313265333032633036303335353034303330633235343137303730366336353230343137303730366336393633363137343639366636653230343936653734363536373732363137343639366636653230343334313230326432303437333333313236333032343036303335353034306230633164343137303730366336353230343336353732373436393636363936333631373436393666366532303431373537343638366637323639373437393331313333303131303630333535303430613063306134313730373036633635323034393665363332653331306233303039303630333535303430363133303235353533303230383136363334633862306533303537313733303062303630393630383634383031363530333034303230316130383139333330313830363039326138363438383666373064303130393033333130623036303932613836343838366637306430313037303133303163303630393261383634383836663730643031303930353331306631373064333233343330333533303338333233313332333933333330356133303238303630393261383634383836663730643031303933343331316233303139333030623036303936303836343830313635303330343032303161313061303630383261383634386365336430343033303233303266303630393261383634383836663730643031303930343331323230343230333232323236336439393239313365333235663163306437643761363331346230343535303337343561363032346633633930313232366166333530626332653330306130363038326138363438636533643034303330323034343733303435303232303537386536353236623062356233306465323562346231343865366632336530626438383631353335613666623865633461396465373338343333633262653530323231303062653834323635333334393162303965376330306437333565323762643865623236373964653462366433613138666434636564386261376565306166383161303030303030303030303030227D';
+
+// ─── Route: POST /api/checkout — Embedded Checkout Session (per-product styling) ───
+async function handleCreateCheckout(env) {
+  if (!env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY not bound');
+  const session = await stripeFetch(env, 'POST', 'checkout/sessions', {
+    mode: 'payment',
+    'ui_mode': 'embedded_page',
+    'payment_method_types[0]': 'card',
+    'payment_method_types[1]': 'link',
+    'line_items[0][price]': 'price_1U8OGeIqUlirfBrCbsIXYS8h',
+    'line_items[0][quantity]': '1',
+    customer_creation: 'always',
+    'metadata[idea_id]': 'coven-compass',
+    return_url: 'https://coven-compass.allmind.biz/success?session_id={CHECKOUT_SESSION_ID}',
+  });
+  return { client_secret: session.client_secret, session_id: session.id };
+}
+
 // ─── Route: GET /success ───
 async function handleSuccess(request, env) {
   const url = new URL(request.url);
@@ -74,8 +88,8 @@ async function handleSuccess(request, env) {
 
   if (sessionId) {
     try {
-      const sessionData = await callProxy(env, '/session', { session_id: sessionId });
-      email = sessionData.email || '';
+      const sessionData = await stripeFetch(env, 'GET', `checkout/sessions/${sessionId}`);
+      email = sessionData.customer_email || (sessionData.customer_details && sessionData.customer_details.email) || '';
     } catch (e) {
       console.error(`[success] Session lookup failed: ${e.message}`);
     }
@@ -97,14 +111,22 @@ async function handleWebhook(request, env) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const ideaId = session.metadata?.idea_id || null;
-    let email = session.metadata?.email || session.customer_email || null;
+    // GUARD (shared Stripe account): every worker webhook receives ALL
+    // checkout.session.completed events. Only process sessions that belong
+    // to THIS product (sessions carry idea_id=<script_name>). Sessions
+    // without idea_id (legacy links) pass through.
+    const ideaId = (session.metadata && session.metadata.idea_id) || null;
+    if (ideaId && ideaId !== 'coven-compass') {
+      console.log(`[webhook] Not a coven-compass order (idea_id=${ideaId}) — skipping ${session.id}`);
+      return jsonResponse({ received: true, skipped: 'not_coven-compass' });
+    }
+    let email = session.customer_email || (session.customer_details && session.customer_details.email) || null;
 
     // Look up email from customer if not on session
     if (!email && session.customer) {
       try {
-        const customerData = await callProxy(env, '/session', { session_id: session.id });
-        email = customerData.email || null;
+        const sessionData = await stripeFetch(env, 'GET', `checkout/sessions/${session.id}`);
+        email = sessionData.customer_email || (sessionData.customer_details && sessionData.customer_details.email) || null;
       } catch (e) {
         console.error(`[webhook] Email lookup failed: ${e.message}`);
       }
@@ -181,25 +203,25 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coven Compass — Every Spell Ingredient + Tracker</title>
-  <meta name="description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. $17 one-time. No subscription.">
+  <meta name="description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. Plus AI tarot readings. $27 one-time. No subscription.">
   <link rel="canonical" href="https://coven-compass.allmind.biz/">
   <meta property="og:type" content="product">
-  <meta property="og:title" content="Coven Compass — Every Spell Ingredient + Tracker">
-  <meta property="og:description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. One-time purchase.">
+  <meta property="og:title" content="Coven Compass — Every Spell Ingredient + Tracker + AI Tarot">
+  <meta property="og:description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. AI tarot readings. One-time purchase.">
   <meta property="og:url" content="https://coven-compass.allmind.biz/">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "Coven Compass",
-    "description": "Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. One-time purchase.",
+    "description": "Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. AI tarot readings. One-time purchase.",
     "brand": { "@type": "Brand", "name": "ALLMIND" },
     "offers": {
       "@type": "Offer",
-      "price": "17.00",
+      "price": "27.00",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
-      "url": "https://buy.stripe.com/14A28r8wc3Ae3fF4ZT8g00g"
+      "url": "https://coven-compass.allmind.biz"
     }
   }
   </script>
@@ -438,6 +460,12 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       .hero-stage{display:flex;flex-direction:column;gap:34px;min-height:0;padding:46px 22px 60px}.hero-stage .hero{order:1;text-align:center}.hero-stage .demo-bar{order:2;width:100%}.hero .subhead{font-size:21px}.hero .trust-line{margin-left:auto;margin-right:auto}.container{padding:0 22px}.proof-strip{padding:0 22px 54px}.proof-strip div{min-width:45%;padding:14px;border-left:0;border-top:1px solid var(--line)}.proof-strip div:first-child{padding-left:14px}
       .pain,.solution,.compare,.proof,.faq,.cta{padding:68px 0}.pain-grid,.benefits{grid-template-columns:1fr}.pain-card,.benefit{min-height:0}.solution-visual{grid-template-columns:1fr;gap:16px}.solution-altar{grid-row:auto;min-height:330px}.solution-altar:after{font-size:26px}.solution-visual:after{font-size:27px}.compare-grid{grid-template-columns:1fr}.faq-item{grid-template-columns:1fr;gap:8px}.faq-list{margin:0}.cta{text-align:center}.cta .divider{margin-left:auto!important;margin-right:auto!important}footer{text-align:center}
     }
+    .price-slash{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin:20px auto 6px;font-family:'Cinzel',serif}
+    .price-slash .ps-old{font-size:21px;color:#8f86a3;text-decoration:line-through;text-decoration-color:#c0392b;text-decoration-thickness:2px}
+    .price-slash .ps-per{font-size:13px}
+    .price-slash .ps-arrow{color:#9f96b2;font-size:17px}
+    .price-slash .ps-new{font-size:40px;font-weight:700;color:var(--gold);line-height:1}
+    .price-slash .ps-desc{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
   </style>
 
 </head>
@@ -452,7 +480,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <a href="#inside">Inside</a>
       <a href="#pricing">One-time price</a>
       <a href="#questions">Questions</a>
-      <a class="nav-cta" href="https://buy.stripe.com/14A28r8wc3Ae3fF4ZT8g00g" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:17.00,currency:'USD'})">Get it — $17</a>
+      <a class="nav-cta" href="#checkout" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})">Get it — $27</a>
     </div>
   </nav>
   <main id="top" class="hero-stage">
@@ -482,13 +510,13 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
             <div class="demo-cat blurred"><div class="demo-cat-label">Incense</div><div class="demo-cat-val" id="demoIncense"></div></div>
             <div class="demo-blur-wrap">
               <div class="demo-blur-cta">
-                <a href="https://buy.stripe.com/14A28r8wc3Ae3fF4ZT8g00g"><span class="lock">&#128274;</span> Unlock All 7 Ingredient Lists</a>
+                <a href="#checkout" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})"><span class="lock">&#128274;</span> Unlock All 7 Ingredient Lists</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <p class="demo-cta-msg">This is 3 of 7 ingredient lists. Get all seven — and the spell tracker — for $17 once.</p>
+      <p class="demo-cta-msg">This is 3 of 7 ingredient lists. Get all seven, the spell tracker — and AI tarot readings — for $27 once.</p>
     </div>
   </div>
 
@@ -530,8 +558,9 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <span class="moon-glyph" aria-hidden="true">☾</span>
       <p class="hero-label">Coven Compass</p>
       <h1>Your Entire Practice.<br><span class="shimmer">One Price. Forever.</span></h1>
-      <p class="subhead">A living ritual reference for <strong>herbs, crystals, candle colors, days, moon phases, elements, and incense</strong> — plus a private spell log for noticing your own patterns over time. $17 once. Yours permanently.</p>
-      <a href="https://buy.stripe.com/14A28r8wc3Ae3fF4ZT8g00g" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:17.00,currency:'USD'})">Get Coven Compass — $17</a>
+      <p class="subhead">A living ritual reference for <strong>herbs, crystals, candle colors, days, moon phases, elements, and incense</strong> — plus a private spell log for noticing your own patterns, and <strong>AI tarot readings</strong> with the full deck. $27 once. Yours permanently.</p>
+      <p class="price-slash"><span class="ps-old">$25<span class="ps-per">/month</span></span><span class="ps-arrow">&rarr;</span><span class="ps-new">$27</span><span class="ps-desc">once. no subscription.</span></p>
+      <a href="#checkout" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})">Get Coven Compass — $27</a>
       <p class="cta-note"><strong>No subscription.</strong> No monthly fees. No account required. Yours permanently.</p>
       <p class="trust-line">&#128274; <strong>Trusted payment, secured by Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong></p>
     </div>
@@ -540,7 +569,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
   <section class="proof-strip" aria-label="Coven Compass promises">
     <div><b>01 / Lookup</b>Choose an intention. See the practical correspondences in one calm view.</div>
     <div><b>02 / Record</b>Keep notes on your own rituals and notice personal patterns over time.</div>
-    <div><b>03 / Keep</b>$17 once. No account, no monthly fee, no rented access.</div>
+    <div><b>03 / Keep</b>$27 once. No account, no monthly fee, no rented access.</div>
   </section>
 
   <!-- THE PAIN -->
@@ -587,7 +616,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         </div>
         <div class="benefit">
           <h3>💰 One Price. Forever.</h3>
-          <p><strong style="color:var(--gold)">$17. One time.</strong> That's less than half a month of a subscription app. You pay once, you use it forever. No updates gated behind a paywall. No features locked behind a premium tier.</p>
+          <p><strong style="color:var(--gold)">$27. One time.</strong> That's less than a month of a subscription app. You pay once, you use it forever. No updates gated behind a paywall. No features locked behind a premium tier.</p>
         </div>
       </div>
     </section>
@@ -606,8 +635,8 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         </div>
         <div class="compare-card compare-good">
           <div class="label">Coven Compass</div>
-          <div class="name">$17<span class="period"> once</span></div>
-          <div class="desc">The full grimoire database + spell tracker. No subscription. No account. You own it. Period.</div>
+          <div class="name">$27<span class="period"> once</span></div>
+          <div class="desc">The full grimoire database + spell tracker + AI tarot readings. No subscription. No account. You own it. Period.</div>
           <div class="save">Save $336+/year</div>
         </div>
       </div>
@@ -646,7 +675,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         </div>
         <div class="faq-item">
           <h3>Will there be a subscription later?</h3>
-          <p>No. The product is $17 one time, period. We build tools, not rent-seekers. What you pay for is what you get — forever.</p>
+          <p>No. The product is $27 one time, period. We build tools, not rent-seekers. What you pay for is what you get — forever.</p>
         </div>
       </div>
     </div>
@@ -658,7 +687,8 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <div class="divider" style="margin-bottom:48px"></div>
       <h2>Your next ritual, fully planned<br>in seconds. Every one, tracked.</h2>
       <p>Less than half the cost of one month of a subscription app. Yours forever.</p>
-      <a href="https://buy.stripe.com/14A28r8wc3Ae3fF4ZT8g00g" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:17.00,currency:'USD'})">Get Coven Compass — $17</a>
+      <p class="price-slash"><span class="ps-old">$25<span class="ps-per">/month</span></span><span class="ps-arrow">&rarr;</span><span class="ps-new">$27</span><span class="ps-desc">once. no subscription.</span></p>
+      <a href="#checkout" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})">Get Coven Compass — $27</a>
       <p class="trust-line">&#128274; <strong>Trusted payment, secured by Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong></p>
     </div>
   </section>
@@ -775,6 +805,57 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     // shader live — dim the CSS veil so the sky reads through
     var veil=document.querySelector('.atmo-veil');
     if(veil){veil.style.transition='opacity 1.5s ease';veil.style.opacity='0.35';}
+  })();
+  </script>
+
+  <!-- Embedded Checkout (shared Stripe account, per-product appearance) -->
+  <style>
+  .checkout-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,10,10,.72);align-items:center;justify-content:center;padding:16px}
+  .checkout-modal.open{display:flex}
+  .checkout-modal-card{position:relative;width:100%;max-width:640px;max-height:92vh;overflow:auto;background:#FAF7F2;border-radius:8px;padding:14px}
+  .checkout-close{position:absolute;top:6px;right:14px;z-index:10;border:0;background:transparent;font-size:30px;line-height:1;color:#0A0A0A;cursor:pointer}
+  </style>
+  <script src="https://js.stripe.com/v3/"></script>
+  <div id="checkout-modal" class="checkout-modal" aria-hidden="true">
+    <div class="checkout-modal-card">
+      <button id="checkout-close" class="checkout-close" aria-label="Close">&times;</button>
+      <div id="checkout-container"></div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var COVEN_STRIPE = Stripe('pk_live_51TFgpZIqUlirfBrCYsEt5ozlLpcj7ZCsNHhJ31EiqjaYwX7CeojHzAk3DhjhJ7vaIxLtAVIRlb9QzhX3g1yXqbZk00sd5wsPtJ');
+    var covenCheckout = null;
+    function covenOpenCheckout(){
+      fetch('/api/checkout',{method:'POST'})
+        .then(function(r){return r.json();})
+        .then(function(d){
+          if(!d.client_secret){throw new Error('no client secret');}
+          // embedded_page themes via ACCOUNT branding settings (shared account —
+          // cannot theme per product here). Per-product appearance requires the
+          // embedded FORM (ui_mode: form) or Checkout Elements instead.
+          return COVEN_STRIPE.initEmbeddedCheckout({
+            clientSecret: d.client_secret
+          });
+        })
+        .then(function(c){
+          covenCheckout = c;
+          document.getElementById('checkout-modal').classList.add('open');
+          c.mount('#checkout-container');
+        })
+        .catch(function(e){ console.error(e); alert('Could not start checkout. Please try again.'); });
+    }
+    function covenCloseCheckout(){
+      document.getElementById('checkout-modal').classList.remove('open');
+      if(covenCheckout){ covenCheckout.destroy(); covenCheckout = null; }
+    }
+    document.addEventListener('click', function(ev){
+      var t = ev.target;
+      var a = t && t.closest ? t.closest('a[href="#checkout"]') : null;
+      if(a){ ev.preventDefault(); covenOpenCheckout(); }
+    });
+    document.getElementById('checkout-close').addEventListener('click', covenCloseCheckout);
+    document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape') covenCloseCheckout(); });
   })();
   </script>
 
@@ -1642,7 +1723,7 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '947012561524608');
 fbq('track', 'PageView');
-fbq('track', 'Purchase', {value: 17.00, currency: 'USD'});
+fbq('track', 'Purchase', {value: 27.00, currency: 'USD'});
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=947012561524608&ev=PageView&noscript=1"/></noscript>
@@ -1663,7 +1744,7 @@ p{font-size:15px;color:var(--stone);margin-bottom:24px}
 <div class="container">
 <div class="divider"></div>
 <h1>You're in.</h1>
-<p>Your Coven Compass app is ready. It opens on any device with a browser — no account, no download needed.</p>
+<p>Your Coven Compass app is ready — ingredient lookups, spell tracker, and AI tarot readings. It opens on any device with a browser — no account, no download needed.</p>
 <a id="appBtn" href="/app" class="download-btn">Open Your App</a>
 <p class="note">Bookmark the app link — it's yours forever.<br>Questions? <a href="mailto:support@allmind.biz">support@allmind.biz</a></p>
 </div>
@@ -1671,6 +1752,55 @@ p{font-size:15px;color:var(--stone);margin-bottom:24px}
 if(document.getElementById('appBtn')){ document.getElementById('appBtn').style.display='inline-block'; }
 </script>
 </body></html>`;
+
+// ─── Tabbed hub: Compass (original app) + Tarot (tarot-reader worker) ───
+// Both apps stay on their own workers/origins — this hub only frames them.
+// It writes NO localStorage, so the compass app's SPELL_KEY data is untouched.
+const HUB_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coven Compass — App</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:'Inter',sans-serif;background:#0d0a14;color:#F5F0E8;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#14101d;border-bottom:1px solid rgba(197,165,90,.25);flex:0 0 auto}
+  .brand{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.08em;color:#C5A55A}
+  .brand small{color:#8f86a3;font-size:11px;letter-spacing:.04em}
+  nav.tabs{display:flex;gap:6px}
+  nav.tabs button{background:transparent;border:1px solid rgba(255,255,255,.12);color:#b9b2c9;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.05em;padding:8px 18px;border-radius:999px;cursor:pointer;transition:all .15s}
+  nav.tabs button.active{background:linear-gradient(135deg,#8b6fc0,#513271);border-color:transparent;color:#fff}
+  main{flex:1 1 auto;position:relative;min-height:0}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  iframe[hidden]{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Coven Compass <small>complete kit</small></div>
+  <nav class="tabs">
+    <button id="tab-compass" class="active" onclick="switchTab('compass')">Compass</button>
+    <button id="tab-tarot" onclick="switchTab('tarot')">Tarot</button>
+  </nav>
+</header>
+<main>
+  <iframe id="frame-compass" src="/app/compass" title="Coven Compass app"></iframe>
+  <iframe id="frame-tarot" src="https://tarot-reader.allmind.biz/read" title="AI Tarot readings" hidden></iframe>
+</main>
+<script>
+function switchTab(name){
+  var c=document.getElementById('frame-compass');
+  var t=document.getElementById('frame-tarot');
+  var bc=document.getElementById('tab-compass');
+  var bt=document.getElementById('tab-tarot');
+  if(name==='compass'){ c.hidden=false; t.hidden=true; bc.classList.add('active'); bt.classList.remove('active'); }
+  else { t.hidden=false; c.hidden=true; bt.classList.add('active'); bc.classList.remove('active'); }
+}
+</script>
+</body>
+</html>`;
 
 // ─── Router ───
 export default {
@@ -1690,7 +1820,18 @@ export default {
       else if (request.method === 'GET' && path === '/success') response = await handleSuccess(request, env);
       else if (request.method === 'POST' && path === '/webhook') response = await handleWebhook(request, env);
       else if (request.method === 'GET' && path === '/download') response = await handleDownload(request, env);
-      else if (path === '/app') response = htmlResponse(APP_HTML);
+      else if (request.method === 'POST' && path === '/api/checkout') response = await handleCreateCheckout(env).then(data => jsonResponse(data)).catch(err => jsonResponse({ error: err.message }, 500));
+      else if (request.method === 'GET' && path === '/.well-known/apple-developer-merchantid-domain-association') response = new Response(APPLE_PAY_VERIFICATION_FILE, { headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'public, max-age=86400' } });
+      else if (path === '/app/compass') response = htmlResponse(APP_HTML);
+      else if (path === '/app') {
+        response = htmlResponse(HUB_HTML);
+        // Cross-origin iframe of the tarot worker must not be blocked:
+        // the hub itself is credentialed for its own storage, and the tarot
+        // iframe loads under the tarot origin's own COEP header.
+        response.headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
+        response.headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
+        response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+      }
       else response = jsonResponse({ error: 'Not found' }, 404);
 
       return addSecurityHeaders(response);
