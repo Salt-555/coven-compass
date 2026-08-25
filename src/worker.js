@@ -478,6 +478,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     <div class="site-links">
       <a href="#how-it-works">How it works</a>
       <a href="#inside">Inside</a>
+      <a href="#tarot">Tarot</a>
       <a href="#pricing">One-time price</a>
       <a href="#questions">Questions</a>
       <a class="nav-cta" href="#checkout" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})">Get it — $27</a>
@@ -615,12 +616,39 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
           <p>Works on any device with a browser. Phone, tablet, laptop. No download. No account. No install. Bookmark it and use it mid-ritual without fumbling through menus.</p>
         </div>
         <div class="benefit">
+          <h3>🔮 AI Tarot Readings</h3>
+          <p>Full 78-card deck, upright &amp; reversed meanings, three-card spreads. Readings generated on your device with AI — no subscription, no cloud, no waiting.</p>
+        </div>
+        <div class="benefit">
           <h3>💰 One Price. Forever.</h3>
           <p><strong style="color:var(--gold)">$27. One time.</strong> That's less than a month of a subscription app. You pay once, you use it forever. No updates gated behind a paywall. No features locked behind a premium tier.</p>
         </div>
       </div>
     </section>
   </div>
+
+  <!-- TAROT MODULE -->
+  <section class="solution" id="tarot" style="background:radial-gradient(ellipse 60% 100% at 50% 50%,rgba(101,67,145,.22),transparent 70%)">
+    <div class="container" style="padding:60px 0">
+      <p class="section-label" style="color:rgba(255,255,255,.5)">The reading, made personal</p>
+      <h2 class="section-title">When you need more than ingredients — ask the cards.</h2>
+      <div class="benefits">
+        <div class="benefit">
+          <h3>🃏 Full 78-Card Deck</h3>
+          <p>Major and minor arcana, every card with upright and reversed meanings. Drawn and interpreted with care, on your device.</p>
+        </div>
+        <div class="benefit">
+          <h3>✨ Three-Card Spreads</h3>
+          <p>Past, present, future. Situation, action, outcome. Pick a spread and get a reading that speaks to your actual question.</p>
+        </div>
+        <div class="benefit">
+          <h3>🔒 On-Device AI</h3>
+          <p>Your readings never leave your browser. No cloud, no account, no data harvesting. Private by design.</p>
+        </div>
+      </div>
+      <p class="demo-cta-msg" style="text-align:center;margin-top:28px">One kit. Two tools. $27 once — compass + tarot, yours forever.</p>
+    </div>
+  </section>
 
   <!-- PRICING COMPARISON -->
   <section class="compare" id="pricing">
@@ -648,9 +676,9 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     <div class="container">
       <div class="stats">
         <div class="stat"><div class="stat-num">30</div><div class="stat-label">Intentions</div></div>
-        <div class="stat"><div class="stat-num">7</div><div class="stat-label">Ingredients Each</div></div>
+        <div class="stat"><div class="stat-num">78</div><div class="stat-label">Tarot Cards</div></div>
         <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Herbs &amp; Crystals</div></div>
-        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Spells Tracked</div></div>
+        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Spells &amp; Readings</div></div>
       </div>
     </div>
   </section>
@@ -672,6 +700,10 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         <div class="faq-item">
           <h3>What if I already have a Book of Shadows?</h3>
           <p>Great — this complements it. Coven Compass handles the lookup and tracking digitally. Your BoS stays for your personal notes, dreams, and ritual records. Think of this as the reference layer that makes your manual notes more effective.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Does this include the tarot reader?</h3>
+          <p>Yes — it's the same kit. One purchase gives you the compass (ingredient lookups + spell tracker) AND the AI tarot reader (full 78-card deck, three-card spreads, on-device). Both tools, one price, no subscription.</p>
         </div>
         <div class="faq-item">
           <h3>Will there be a subscription later?</h3>
