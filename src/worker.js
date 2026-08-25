@@ -1765,14 +1765,14 @@ const HUB_HTML = `<!DOCTYPE html>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%}
-  body{font-family:'Inter',sans-serif;background:#0d0a14;color:#F5F0E8;display:flex;flex-direction:column}
+  body{font-family:'Inter',sans-serif;background:#0d0a14;color:#F5F0E8;display:flex;flex-direction:column;height:100%;height:100dvh}
   header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#14101d;border-bottom:1px solid rgba(197,165,90,.25);flex:0 0 auto}
   .brand{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.08em;color:#C5A55A}
   .brand small{color:#8f86a3;font-size:11px;letter-spacing:.04em}
   nav.tabs{display:flex;gap:6px}
   nav.tabs button{background:transparent;border:1px solid rgba(255,255,255,.12);color:#b9b2c9;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.05em;padding:8px 18px;border-radius:999px;cursor:pointer;transition:all .15s}
   nav.tabs button.active{background:linear-gradient(135deg,#8b6fc0,#513271);border-color:transparent;color:#fff}
-  main{flex:1 1 auto;position:relative;min-height:0}
+  main{flex:1 1 0;position:relative;min-height:0}
   iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   iframe[hidden]{display:none}
 </style>
@@ -1787,7 +1787,7 @@ const HUB_HTML = `<!DOCTYPE html>
 </header>
 <main>
   <iframe id="frame-compass" src="/app/compass" title="Coven Compass app"></iframe>
-  <iframe id="frame-tarot" src="https://tarot-reader.allmind.biz/read" title="AI Tarot readings" hidden></iframe>
+  <iframe id="frame-tarot" src="https://tarot-reader.allmind.biz/read?embed=1" title="AI Tarot readings" hidden></iframe>
 </main>
 <script>
 function switchTab(name){
