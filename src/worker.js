@@ -1753,52 +1753,52 @@ if(document.getElementById('appBtn')){ document.getElementById('appBtn').style.d
 </script>
 </body></html>`;
 
-// ─── Tabbed hub: Compass (original app) + Tarot (tarot-reader worker) ───
-// Both apps stay on their own workers/origins — this hub only frames them.
-// It writes NO localStorage, so the compass app's SPELL_KEY data is untouched.
+// ─── App hub: selection screen → opens each app at its full URL ───
+// No iframes: each app runs top-level on its own origin (coven-compass
+// app at /app/compass, tarot reader at tarot-reader.allmind.biz/read).
+// This is deliberately trivial — a link page cannot break the apps.
 const HUB_HTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coven Compass — App</title>
+<title>Coven Compass — Choose your tool</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{height:100%}
-  body{font-family:'Inter',sans-serif;background:#0d0a14;color:#F5F0E8;display:flex;flex-direction:column;height:100%;height:100dvh}
-  header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#14101d;border-bottom:1px solid rgba(197,165,90,.25);flex:0 0 auto}
-  .brand{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.08em;color:#C5A55A}
-  .brand small{color:#8f86a3;font-size:11px;letter-spacing:.04em}
-  nav.tabs{display:flex;gap:6px}
-  nav.tabs button{background:transparent;border:1px solid rgba(255,255,255,.12);color:#b9b2c9;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.05em;padding:8px 18px;border-radius:999px;cursor:pointer;transition:all .15s}
-  nav.tabs button.active{background:linear-gradient(135deg,#8b6fc0,#513271);border-color:transparent;color:#fff}
-  main{flex:1 1 0;position:relative;min-height:0}
-  iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  iframe[hidden]{display:none}
+  html,body{min-height:100%}
+  body{font-family:'Inter',sans-serif;background:#0d0a14;color:#F5F0E8;padding:24px 16px 40px}
+  .wrap{max-width:520px;margin:0 auto;text-align:center}
+  .brand{font-family:'Cinzel',serif;font-size:20px;letter-spacing:.08em;color:#C5A55A;margin-bottom:6px}
+  .sub{color:#8f86a3;font-size:14px;margin-bottom:28px}
+  a.card{display:block;text-decoration:none;color:inherit;background:linear-gradient(145deg,#1a1425,#14101d);border:1px solid rgba(197,165,90,.3);border-radius:16px;padding:26px 20px;margin-bottom:16px;transition:transform .15s, border-color .2s}
+  a.card:hover{transform:translateY(-2px);border-color:#C5A55A}
+  a.card .icon{font-size:34px;margin-bottom:10px}
+  a.card h2{font-family:'Cinzel',serif;font-size:19px;font-weight:600;color:#F5F0E8;margin-bottom:8px;letter-spacing:.04em}
+  a.card p{color:#b9b2c9;font-size:14px;line-height:1.6}
+  a.card .go{display:inline-block;margin-top:14px;color:#C5A55A;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">Coven Compass <small>complete kit</small></div>
-  <nav class="tabs">
-    <button id="tab-compass" class="active" onclick="switchTab('compass')">Compass</button>
-    <button id="tab-tarot" onclick="switchTab('tarot')">Tarot</button>
-  </nav>
-</header>
-<main>
-  <iframe id="frame-compass" src="/app/compass" title="Coven Compass app"></iframe>
-  <iframe id="frame-tarot" src="https://tarot-reader.allmind.biz/read?embed=1" title="AI Tarot readings" hidden></iframe>
-</main>
-<script>
-function switchTab(name){
-  var c=document.getElementById('frame-compass');
-  var t=document.getElementById('frame-tarot');
-  var bc=document.getElementById('tab-compass');
-  var bt=document.getElementById('tab-tarot');
-  if(name==='compass'){ c.hidden=false; t.hidden=true; bc.classList.add('active'); bt.classList.remove('active'); }
-  else { t.hidden=false; c.hidden=true; bt.classList.add('active'); bc.classList.remove('active'); }
-}
-</script>
+<div class="wrap">
+  <div class="brand">Coven Compass</div>
+  <p class="sub">Complete kit — two tools, one purchase</p>
+
+  <a class="card" href="/app/compass">
+    <div class="icon">&#127765;</div>
+    <h2>Compass</h2>
+    <p>Ingredient lookups, moon timing, and your private spell log.</p>
+    <span class="go">Open Compass &rarr;</span>
+  </a>
+
+  <a class="card" href="https://tarot-reader.allmind.biz/read">
+    <div class="icon">&#127921;</div>
+    <h2>Tarot Reader</h2>
+    <p>AI tarot readings with the full 78-card deck, on your device.</p>
+    <span class="go">Open Tarot &rarr;</span>
+  </a>
+
+  <p style="color:#6b6658;font-size:12px;margin-top:20px">One purchase covers both tools &mdash; no subscription, yours forever.</p>
+</div>
 </body>
 </html>`;
 
@@ -1823,15 +1823,7 @@ export default {
       else if (request.method === 'POST' && path === '/api/checkout') response = await handleCreateCheckout(env).then(data => jsonResponse(data)).catch(err => jsonResponse({ error: err.message }, 500));
       else if (request.method === 'GET' && path === '/.well-known/apple-developer-merchantid-domain-association') response = new Response(APPLE_PAY_VERIFICATION_FILE, { headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'public, max-age=86400' } });
       else if (path === '/app/compass') response = htmlResponse(APP_HTML);
-      else if (path === '/app') {
-        response = htmlResponse(HUB_HTML);
-        // Cross-origin iframe of the tarot worker must not be blocked:
-        // the hub itself is credentialed for its own storage, and the tarot
-        // iframe loads under the tarot origin's own COEP header.
-        response.headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
-        response.headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
-        response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-      }
+      else if (path === '/app') response = htmlResponse(HUB_HTML);
       else response = jsonResponse({ error: 'Not found' }, 404);
 
       return addSecurityHeaders(response);
