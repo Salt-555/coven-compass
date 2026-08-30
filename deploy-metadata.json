@@ -6,9 +6,10 @@
   "kv_customers_id": "8635044516fa443c9dd502e56d7d9a22",
   "kv_sales_id": "3756a16f13a54999a2d5d7e55981b6af",
   "stripe_product_id": "prod_ULyv51tzBVCCp9",
-  "stripe_price_id": "price_1TNGxJIqUlirfBrCoyJLXWpt",
+  "stripe_price_id": "price_1U9zgfIqUlirfBrC1m0LsG4q",
   "stripe_webhook_id": "we_1TNGvmIqUlirfBrCqVbaIKXy",
   "meta_pixel_id": "947012561524608",
-  "deployed_at": "2026-06-26",
-  "last_deploy_source_hash": "29097239f390bc83c91c93b0b662bd8bb5247e1d0a97927de70967a012501048"
+  "deployed_at": "2026-08-29",
+  "worker_version_id": "740b2c81-9859-4d95-802e-0c3b5a96d9a7",
+  "note": "Price $27 -> $10 per Salt 2026-08-29. New price price_1U9zgfIqUlirfBrC1m0LsG4q (unit_amount 1000), e2e checkout verified 1000 cents + metadata idea_id=coven-compass. Old $27 price price_1U8OGeIqUlirfBrCbsIXYS8h deactivated post-verification. Worker deployed via wrangler (CLOUDFLARE_TOKEN), version 740b2c81. Landing copy, Purchase pixel value, slash anchor ($25/month -> $10), FAQ, meta description all at $10. Server-side Embedded Checkout — no Stripe payment link used. Prior deploy-metadata content was stale ($12-era, 2026-08-11) and has been replaced."
 }

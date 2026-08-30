@@ -71,7 +71,7 @@ async function handleCreateCheckout(env) {
     'ui_mode': 'embedded_page',
     'payment_method_types[0]': 'card',
     'payment_method_types[1]': 'link',
-    'line_items[0][price]': 'price_1U8OGeIqUlirfBrCbsIXYS8h',
+    'line_items[0][price]': 'price_1U9zgfIqUlirfBrC1m0LsG4q',
     'line_items[0][quantity]': '1',
     customer_creation: 'always',
     'metadata[idea_id]': 'coven-compass',
@@ -203,7 +203,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coven Compass — Every Spell Ingredient + Tracker</title>
-  <meta name="description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. Plus AI tarot readings. $27 one-time. No subscription.">
+  <meta name="description" content="Herbs, crystals, candles, days, moon phases — every ingredient for any spell intention instantly. Track your spells. Plus AI tarot readings. $10 one-time. No subscription.">
   <link rel="canonical" href="https://coven-compass.allmind.biz/">
   <meta property="og:type" content="product">
   <meta property="og:title" content="Coven Compass — Every Spell Ingredient + Tracker + AI Tarot">
@@ -218,7 +218,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
     "brand": { "@type": "Brand", "name": "ALLMIND" },
     "offers": {
       "@type": "Offer",
-      "price": "27.00",
+      "price": "10.00",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
       "url": "https://coven-compass.allmind.biz"
@@ -481,7 +481,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <a href="#tarot">Tarot</a>
       <a href="#pricing">One-time price</a>
       <a href="#questions">Questions</a>
-      <a class="nav-cta" href="#checkout" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})">Get it — $27</a>
+      <a class="nav-cta" href="#checkout" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:10.00,currency:'USD'})">Get it — $10</a>
     </div>
   </nav>
   <main id="top" class="hero-stage">
@@ -511,13 +511,13 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
             <div class="demo-cat blurred"><div class="demo-cat-label">Incense</div><div class="demo-cat-val" id="demoIncense"></div></div>
             <div class="demo-blur-wrap">
               <div class="demo-blur-cta">
-                <a href="#checkout" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})"><span class="lock">&#128274;</span> Unlock All 7 Ingredient Lists</a>
+                <a href="#checkout" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:10.00,currency:'USD'})"><span class="lock">&#128274;</span> Unlock All 7 Ingredient Lists</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <p class="demo-cta-msg">This is 3 of 7 ingredient lists. Get all seven, the spell tracker — and AI tarot readings — for $27 once.</p>
+      <p class="demo-cta-msg">This is 3 of 7 ingredient lists. Get all seven, the spell tracker — and AI tarot readings — for $10 once.</p>
     </div>
   </div>
 
@@ -559,9 +559,9 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <span class="moon-glyph" aria-hidden="true">☾</span>
       <p class="hero-label">Coven Compass</p>
       <h1>Your Entire Practice.<br><span class="shimmer">One Price. Forever.</span></h1>
-      <p class="subhead">A living ritual reference for <strong>herbs, crystals, candle colors, days, moon phases, elements, and incense</strong> — plus a private spell log for noticing your own patterns, and <strong>AI tarot readings</strong> with the full deck. $27 once. Yours permanently.</p>
-      <p class="price-slash"><span class="ps-old">$25<span class="ps-per">/month</span></span><span class="ps-arrow">&rarr;</span><span class="ps-new">$27</span><span class="ps-desc">once. no subscription.</span></p>
-      <a href="#checkout" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})">Get Coven Compass — $27</a>
+      <p class="subhead">A living ritual reference for <strong>herbs, crystals, candle colors, days, moon phases, elements, and incense</strong> — plus a private spell log for noticing your own patterns, and <strong>AI tarot readings</strong> with the full deck. $10 once. Yours permanently.</p>
+      <p class="price-slash"><span class="ps-old">$25<span class="ps-per">/month</span></span><span class="ps-arrow">&rarr;</span><span class="ps-new">$10</span><span class="ps-desc">once. no subscription.</span></p>
+      <a href="#checkout" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:10.00,currency:'USD'})">Get Coven Compass — $10</a>
       <p class="cta-note"><strong>No subscription.</strong> No monthly fees. No account required. Yours permanently.</p>
       <p class="trust-line">&#128274; <strong>Trusted payment, secured by Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong></p>
     </div>
@@ -570,7 +570,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
   <section class="proof-strip" aria-label="Coven Compass promises">
     <div><b>01 / Lookup</b>Choose an intention. See the practical correspondences in one calm view.</div>
     <div><b>02 / Record</b>Keep notes on your own rituals and notice personal patterns over time.</div>
-    <div><b>03 / Keep</b>$27 once. No account, no monthly fee, no rented access.</div>
+    <div><b>03 / Keep</b>$10 once. No account, no monthly fee, no rented access.</div>
   </section>
 
   <!-- THE PAIN -->
@@ -621,7 +621,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         </div>
         <div class="benefit">
           <h3>💰 One Price. Forever.</h3>
-          <p><strong style="color:var(--gold)">$27. One time.</strong> That's less than a month of a subscription app. You pay once, you use it forever. No updates gated behind a paywall. No features locked behind a premium tier.</p>
+          <p><strong style="color:var(--gold)">$10. One time.</strong> That's less than a month of a subscription app. You pay once, you use it forever. No updates gated behind a paywall. No features locked behind a premium tier.</p>
         </div>
       </div>
     </section>
@@ -646,7 +646,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
           <p>Your readings never leave your browser. No cloud, no account, no data harvesting. Private by design.</p>
         </div>
       </div>
-      <p class="demo-cta-msg" style="text-align:center;margin-top:28px">One kit. Two tools. $27 once — compass + tarot, yours forever.</p>
+      <p class="demo-cta-msg" style="text-align:center;margin-top:28px">One kit. Two tools. $10 once — compass + tarot, yours forever.</p>
     </div>
   </section>
 
@@ -663,7 +663,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         </div>
         <div class="compare-card compare-good">
           <div class="label">Coven Compass</div>
-          <div class="name">$27<span class="period"> once</span></div>
+          <div class="name">$10<span class="period"> once</span></div>
           <div class="desc">The full grimoire database + spell tracker + AI tarot readings. No subscription. No account. You own it. Period.</div>
           <div class="save">Save $336+/year</div>
         </div>
@@ -707,7 +707,7 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
         </div>
         <div class="faq-item">
           <h3>Will there be a subscription later?</h3>
-          <p>No. The product is $27 one time, period. We build tools, not rent-seekers. What you pay for is what you get — forever.</p>
+          <p>No. The product is $10 one time, period. We build tools, not rent-seekers. What you pay for is what you get — forever.</p>
         </div>
       </div>
     </div>
@@ -719,8 +719,8 @@ const LANDING_PAGE_HTML = `<!DOCTYPE html>
       <div class="divider" style="margin-bottom:48px"></div>
       <h2>Your next ritual, fully planned<br>in seconds. Every one, tracked.</h2>
       <p>Less than half the cost of one month of a subscription app. Yours forever.</p>
-      <p class="price-slash"><span class="ps-old">$25<span class="ps-per">/month</span></span><span class="ps-arrow">&rarr;</span><span class="ps-new">$27</span><span class="ps-desc">once. no subscription.</span></p>
-      <a href="#checkout" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:27.00,currency:'USD'})">Get Coven Compass — $27</a>
+      <p class="price-slash"><span class="ps-old">$25<span class="ps-per">/month</span></span><span class="ps-arrow">&rarr;</span><span class="ps-new">$10</span><span class="ps-desc">once. no subscription.</span></p>
+      <a href="#checkout" class="cta-btn" onclick="if(typeof fbq==='function')fbq('track','InitiateCheckout',{value:10.00,currency:'USD'})">Get Coven Compass — $10</a>
       <p class="trust-line">&#128274; <strong>Trusted payment, secured by Stripe</strong> &middot; Instant access &middot; <strong>14-day full-refund guarantee</strong></p>
     </div>
   </section>
@@ -1755,7 +1755,7 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '947012561524608');
 fbq('track', 'PageView');
-fbq('track', 'Purchase', {value: 27.00, currency: 'USD'});
+fbq('track', 'Purchase', {value: 10.00, currency: 'USD'});
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=947012561524608&ev=PageView&noscript=1"/></noscript>
