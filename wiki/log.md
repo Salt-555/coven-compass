@@ -44,3 +44,6 @@ Wrote wiki/app-functions.md (all app functions, live-verified). Hub no longer bo
 
 ## 2026-09-23 — chart page self-service
 Chart page now takes birth details inline (chartless devices) and has a top "Change birth details" reset button, prefilled. Verified live: cast -> 133k-char reading, 7 TOC links, profile saved.
+
+## 2026-09-23 — invisible reading fixed + no paywall kick-outs
+The reading was rendering but hidden by vendor CSS (#out display:none). Fixed + verified by computed style. Chartless paid devices enter birth details inside the app (chart page form; hub CTA points there).

@@ -68,3 +68,12 @@ Statuses: VERIFIED (exercised live) / PRESENT (layer loads, not fully exercised)
 - VERIFIED OG tags + share image, favicon
 - VERIFIED "No card. No email. Instant." microcopy
 - VERIFIED Route: coven-compass.allmind.biz → coven-compass-v2 worker (rollback documented in SWAP.md)
+## 2026-09-23 fixes (post-swap)
+- FIX reading was invisible: vendor reading.css ships `#out{display:none}` (the original tool
+  revealed it via JS). chart.html now overrides it. Verified with computed styles: #out display
+  block, 47,438px tall, 8/8 sections visible, wheel SVG present.
+- FIX no more kick-outs for paid users: hub chartless banner CTA → /chart.html ("Enter my birth
+  details"), and the chart page's inline form handles it in place. Only UNPAID devices bounce to
+  the paywall (the gate), which is the intended paywall behavior.
+- LESSON: verify visibility with computed styles / rects, not textContent — hidden elements still
+  return textContent.
