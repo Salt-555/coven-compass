@@ -41,3 +41,6 @@ Full v1 product ported wholesale to /spells (lookup, reverse, log+analysis, supp
 
 ## 2026-09-23 — function manifest + hub fix
 Wrote wiki/app-functions.md (all app functions, live-verified). Hub no longer bounces paid-but-chartless devices (cast-first banner instead). Tarot boots on the new origin.
+
+## 2026-09-23 — chart page self-service
+Chart page now takes birth details inline (chartless devices) and has a top "Change birth details" reset button, prefilled. Verified live: cast -> 133k-char reading, 7 TOC links, profile saved.

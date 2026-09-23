@@ -36,7 +36,8 @@ Statuses: VERIFIED (exercised live) / PRESENT (layer loads, not fully exercised)
 - VERIFIED Stats block
 - VERIFIED TOC — 7 links, click scrolls to section
 - PRESENT Print / save as PDF (`#print`)
-- VERIFIED No-chart fallback message + cast link
+- VERIFIED No-chart fallback: inline birth-details form right on the chart page (new devices cast without leaving the app)
+- VERIFIED "Change birth details" reset button in the top tools bar (prefilled with current details, live 2026-09-23)
 
 ## 5. Tarot Reader (`/tarot`)
 - VERIFIED 3-card spread, 78-card deck, draw interaction
