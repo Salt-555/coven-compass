@@ -1,0 +1,22 @@
+[Script Info]
+Title: Coven Compass paid-social overlays
+ScriptType: v4.00+
+PlayResX: 704
+PlayResY: 1280
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
+Style: Hook,DejaVu Sans,50,&H00F7F0DF,&H000000FF,&H00140F10,&H9C140F10,1,0,0,0,100,100,1.5,0,3,3,1,8,28,28,64,1
+Style: Detail,DejaVu Sans,34,&H00F7F0DF,&H000000FF,&H00140F10,&H92140F10,1,0,0,0,100,100,1,0,3,2,1,8,30,30,74,1
+Style: Brand,DejaVu Sans,54,&H0096D7C6,&H000000FF,&H00140F10,&H9C140F10,1,0,0,0,100,100,2,0,3,3,1,8,28,28,76,1
+Style: Offer,DejaVu Sans,35,&H00F7F0DF,&H000000FF,&H00140F10,&H92140F10,1,0,0,0,100,100,1,0,3,2,1,8,30,30,62,1
+
+[Events]
+Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
+Dialogue: 0,0:00:00.15,0:00:02.30,Hook,,0,0,0,,STILL PLANNING RITUALS\NFROM FIVE OPEN TABS?
+Dialogue: 0,0:00:02.30,0:00:04.45,Hook,,0,0,0,,PICK ONE INTENTION.\NGET ALL 7 CORRESPONDENCES.
+Dialogue: 0,0:00:04.45,0:00:06.75,Detail,,0,0,0,,HERBS • CRYSTALS • MOON PHASE\NCANDLE COLOR • DAYS • INCENSE
+Dialogue: 0,0:00:06.75,0:00:08.25,Hook,,0,0,0,,TRACK WHAT WORKS\NIN YOUR PRACTICE.
+Dialogue: 0,0:00:08.25,0:00:10.04,Brand,,0,0,0,,COVEN COMPASS
+Dialogue: 1,0:00:09.05,0:00:10.04,Offer,,0,0,0,,RITUAL REFERENCE + TRACKER\N$12 ONCE • YOURS FOREVER

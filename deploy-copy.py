@@ -16,6 +16,8 @@ metadata = {
         {"type": "kv_namespace", "name": "SALES_TRACKING", "namespace_id": "3756a16f13a54999a2d5d7e55981b6af"},
         {"type": "plain_text", "name": "BASE_URL", "text": "https://coven-compass.allmind.biz"},
         {"type": "secret_text", "name": "RESEND_KEY", "text": os.environ.get("RESEND_KEY", "")},
+        {"type": "secret_text", "name": "STRIPE_SECRET_KEY", "text": os.environ.get("STRIPE_SECRET_KEY", "")},
+        {"type": "secret_text", "name": "PAYMENT_HMAC_SECRET", "text": os.environ.get("PAYMENT_HMAC_SECRET", "")},
     ]
 }
 
