@@ -50,3 +50,6 @@ The reading was rendering but hidden by vendor CSS (#out display:none). Fixed + 
 
 ## 2026-09-24 — frontend review pass (5 reviewers)
 18 findings fixed and verified live (blockers: dead affinity claim wired, gate kick-outs, ungated success receipt, cold-landing entry, typed-city dead end). Backlog: birthform extraction, desktop layout, tarot empty state, spells restyle, copy standardisation, a11y round 2. See wiki/frontend-review-2026-09-24.md
+
+## 2026-09-24 — storefront dossier
+Reviewed the live sales page in depth (source + live geometry at 390x844 and 1440x900 + full copy dump). Cold page = exactly one screen, no case made before the ask; post-cast scroll-to-buy ~951px; desktop wastes ~65% of the viewport. 17 friction items, 7 ranked levers. See wiki/storefront-dossier.md
