@@ -47,3 +47,6 @@ Chart page now takes birth details inline (chartless devices) and has a top "Cha
 
 ## 2026-09-23 — invisible reading fixed + no paywall kick-outs
 The reading was rendering but hidden by vendor CSS (#out display:none). Fixed + verified by computed style. Chartless paid devices enter birth details inside the app (chart page form; hub CTA points there).
+
+## 2026-09-24 — frontend review pass (5 reviewers)
+18 findings fixed and verified live (blockers: dead affinity claim wired, gate kick-outs, ungated success receipt, cold-landing entry, typed-city dead end). Backlog: birthform extraction, desktop layout, tarot empty state, spells restyle, copy standardisation, a11y round 2. See wiki/frontend-review-2026-09-24.md

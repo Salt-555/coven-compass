@@ -1,7 +1,7 @@
 # Wiki Index — Coven Compass
 
 > Content catalog. Every page listed under its type with a one-line summary.
-> Last updated: 2026-09-23 | Total pages: 7
+> Last updated: 2026-09-23 | Total pages: 8
 
 ## Entities
 - [[coven-compass]] — The company itself: current state (active main target, $10 bundle), hypothesis, buyer, status, key facts.
@@ -13,6 +13,9 @@
 
 ## Reference
 - [[app-functions]] — canonical manifest of every app function + live verification status.
+
+## Reviews
+- [[frontend-review-2026-09-24]] — 5-reviewer frontend audit: what was fixed, decisions, backlog.
 
 ## Queries
 - [[storefront-free-chart-funnel-2026-09-23]] — landing rebuilt as free mini-chart → $10 upsell; v2 gets a checkout worker (embedded + hosted_page webview fix).
